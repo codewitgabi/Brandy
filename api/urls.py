@@ -1,8 +1,8 @@
-from django.urls import path
+from django.urls import path, re_path
 from . import views
 from knox import views as knox_views
 
-
+app_name = "api"
 urlpatterns = [
 	path("register/", views.RegisterView.as_view(), name="register"),
 	path("login/", views.AppLoginView.as_view(), name="login"),
