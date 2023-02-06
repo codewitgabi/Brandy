@@ -1,0 +1,6 @@
+Django>=3.2
+django_rest_framework
+psycopg2
+django-decouple
+django-rest-knox>=4.2.0
+django-rest-passwordreset
