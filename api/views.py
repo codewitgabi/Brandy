@@ -2,13 +2,16 @@
 from django.shortcuts import render
 from django.contrib.auth import login
 from django.contrib.auth import get_user_model
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 
 """ custom models imports """
 from account.models import Otp
 from .serializers import (
 	RegisterSerializer,
 	UserSerializer,
-	ChangePasswordSerializer)
+	ChangePasswordSerializer,
+	OtpSerializer)
 	
 """ rest_framework imports """
 from rest_framework import status
@@ -19,6 +22,8 @@ from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
 
+""" regular imports """
+import random
 
 User = get_user_model()
 
@@ -70,6 +75,41 @@ def verify_OTP(request, otp):
 			}, status= status.HTTP_404_NOT_FOUND)
 			
 
+class ResendOtpView(generics.UpdateAPIView):
+	serializer_class = OtpSerializer
+	model = User
+	
+	def update(self, request, *args, **kwargs):
+		email = request.data.get("email")
+		try:
+			user = User.objects.get(email=email)
+			""" create otp """
+			token = "".join(random.choices("1234567890", k=5))
+			otp = Otp.objects.create(user=user, token=token)
+			otp.save()
+			
+			""" send otp """
+			subject = "Resent Otp Verification"
+			html_content = render_to_string("otp.html", {"token": token})
+			mail = EmailMessage(
+				subject,
+				html_content,
+				to=[email]
+			)
+				
+			mail.content_subtype = "html"
+			mail.fail_silently = False
+			mail.send()
+			
+			return Response({"status": "success"}, status=status.HTTP_200_OK)
+				
+		except User.DoesNotExist:
+			return Response({
+				"status": "failure",
+				"message": "Invalid credential provided"},
+				status=status.HTTP_404_NOT_FOUND)
+				
+
 class AppLoginView(KnoxLoginView):
 	permission_classes = (permissions.AllowAny,)
 	
@@ -85,8 +125,7 @@ class ChangePassword(generics.UpdateAPIView):
 	serializer_class = ChangePasswordSerializer
 	permission_classes = (permissions.IsAuthenticated,)
 	model = User
-	
-	
+		
 	def update(self, request, *args, **kwargs):
 		user = self.request.user
 		serializer = self.get_serializer(data=request.data)

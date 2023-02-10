@@ -105,4 +105,9 @@ class ChangePasswordSerializer(serializers.Serializer):
 			required=True,
 			min_length=10)
 	
-	
+
+class OtpSerializer(serializers.Serializer):
+	class Meta:
+		model = Otp
+		fields = ["user.email"]
+		

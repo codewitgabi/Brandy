@@ -26,7 +26,7 @@ class Otp(models.Model):
 	def has_expired(self):
 		delta = timezone.now() - self.date_created
 		# token expires in one minute
-		return delta.seconds > 99009877
+		return delta.seconds > 120
 	
 	def __str__(self):
 		return str(self.token)
