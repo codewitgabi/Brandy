@@ -38,6 +38,8 @@ class RegisterSerializer(serializers.ModelSerializer):
 		}
 			
 	def create(self, validated_data):
+		""" Get request object """
+		request = self.context["request"]
 		username = validated_data.get("username")
 		email = validated_data.get("email")
 		password = validated_data.get("password")
@@ -47,42 +49,42 @@ class RegisterSerializer(serializers.ModelSerializer):
 			email= email,
 			password= password)
 			
-		#user.is_active = False
+		user.is_active = False
+		user.save()
 		
-		#token = "".join(random.choices("1234567890", k=5))
+		token = "".join(random.choices("1234567890", k=5))
 		
-		# create otp
-		#otp = Otp.objects.create(token=token)
-		#otp.save()
+		""" create otp """
+		otp = Otp.objects.create(user=user, token=token)
+		otp.save()
 		
-		# send main
-		#subject = "Otp Verification"
-#		html_content = render_to_string("otp.html", {"token": token})
-#		mail = EmailMessage(
-#			subject,
-#			html_content,
-#			to=[email]
-#		)
-#		
-#		mail.content_subtype = "html"
-#		mail.fail_silently = False
-#		mail.send()
+		""" send mail """
+		subject = "Otp Verification"
+		html_content = render_to_string("otp.html", {"token": token})
+		mail = EmailMessage(
+			subject,
+			html_content,
+			to=[email]
+		)
+		
+		mail.content_subtype = "html"
+		mail.fail_silently = False
+		mail.send()
 		
 		return user;
-
 
 	def validate_password(self, value):
 		symbols = "@#_~[]{}()$&?%/"
 		
-		# MinimumLengthValidator
+		""" MinimumLengthValidator """
 		if len(value) < 10:
 			raise serializers.ValidationError("Password is too short.")
 		
-		# CommonPasswordValidator
+		""" CommonPasswordValidator """
 		if value.isdigit() or value.isalpha():
 			raise serializers.ValidationError("Password is too common.")
 		
-		# NoSymbolValidator
+		""" NoSymbolValidator """
 		if not any([sym in symbols for sym in value]):
 			raise serializers.ValidationError(f"Password should contain any of {symbols}")
 			

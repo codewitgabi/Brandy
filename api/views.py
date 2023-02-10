@@ -1,16 +1,24 @@
+""" django imports """
 from django.shortcuts import render
-from rest_framework import generics
+from django.contrib.auth import login
+from django.contrib.auth import get_user_model
+
+""" custom models imports """
+from account.models import Otp
 from .serializers import (
 	RegisterSerializer,
 	UserSerializer,
 	ChangePasswordSerializer)
+	
+""" rest_framework imports """
+from rest_framework import status
+from rest_framework import generics
+from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from django.contrib.auth import login
 from rest_framework import permissions
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.views import LoginView as KnoxLoginView
-from django.contrib.auth import get_user_model
-from rest_framework import status
+
 
 User = get_user_model()
 
@@ -27,6 +35,39 @@ class RegisterView(generics.GenericAPIView):
 	       		user,
 	       		context= self.get_serializer_context()).data,
 			})
+
+
+@api_view(["GET"])
+def verify_OTP(request, otp):
+	""" 
+	Verifies user account by sending the otp passed in the url
+	"""
+	if request.method == "GET":
+		try:
+			otp_obj = Otp.objects.get(token=otp, valid=True)
+			if otp_obj.has_expired:
+				return Response({
+					"status": "failed",
+					"message": "The given otp has expired"
+				}, status= status.HTTP_404_NOT_FOUND)
+			else:
+				""" Activate user account """
+				user = Otp.objects.get(token=otp).user
+				user.is_active = True
+				user.save()
+				""" Make code invalid """
+				otp_obj.valid = False
+				otp_obj.save()
+				return Response({
+					"status": "success",
+					"message": "verification complete"
+				}, status= status.HTTP_200_OK)
+				
+		except Otp.DoesNotExist:
+			return Response({
+				"status": "failed",
+				"message": "The given otp does not exist"
+			}, status= status.HTTP_404_NOT_FOUND)
 			
 
 class AppLoginView(KnoxLoginView):
@@ -85,37 +126,37 @@ class ChangePassword(generics.UpdateAPIView):
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-from rest_framework import status
-from rest_framework.authtoken.models import Token
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
-from rest_framework.response import Response
+#from rest_framework import status
+#from rest_framework.authtoken.models import Token
+#from rest_framework.decorators import api_view, permission_classes
+#from rest_framework.permissions import AllowAny
+#from rest_framework.response import Response
 
-from social_django.utils import psa
+#from social_django.utils import psa
 
-from requests.exceptions import HTTPError
+#from requests.exceptions import HTTPError
 
 
-def register_by_access_token(request, backend):
-    token = request.data.get('access_token')
-    user = request.backend.do_auth(token)
-    print(request)
-    if user:
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response(
-            {
-                'token': token.key
-            },
-            status=status.HTTP_200_OK,
-            )
-    else:
-        return Response(
-            {
-                'errors': {
-                    'token': 'Invalid token'
-                    }
-            },
-            status=status.HTTP_400_BAD_REQUEST,
-        )
+#def register_by_access_token(request, backend):
+#    token = request.data.get('access_token')
+#    user = request.backend.do_auth(token)
+#    print(request)
+#    if user:
+#        token, _ = Token.objects.get_or_create(user=user)
+#        return Response(
+#            {
+#                'token': token.key
+#            },
+#            status=status.HTTP_200_OK,
+#            )
+#    else:
+#        return Response(
+#            {
+#                'errors': {
+#                    'token': 'Invalid token'
+#                    }
+#            },
+#            status=status.HTTP_400_BAD_REQUEST,
+#        )
 
 		

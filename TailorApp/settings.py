@@ -50,7 +50,6 @@ THIRD_PARTY_APPS = [
 	"rest_framework",
 	"knox",
 	"django_rest_passwordreset",
-	"oauth2_provider",
 	"social_django",
 	"drf_social_oauth2",
 ]
@@ -209,7 +208,7 @@ SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.user.user_details',
 )
 
-SOCIAL_AUTH_RAISE_EXCEPTIONS = True
+SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 LOGIN_REDIRECT_URL = "api:login"
 
