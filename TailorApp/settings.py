@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -48,10 +49,12 @@ CUSTOM_APPS = [
 
 THIRD_PARTY_APPS = [
 	"rest_framework",
-	"knox",
 	"django_rest_passwordreset",
 	"social_django",
+	"oauth2_provider",
 	"drf_social_oauth2",
+	"rest_framework_simplejwt",
+	"rest_framework_simplejwt.token_blacklist",
 ]
 
 
@@ -154,14 +157,16 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = "account.User"
 
 
-#REST_FRAMEWORK = {
-#	"DEFAULT_AUTHENTICATION_CLASSES": (
-#		"oauth2_provider.contrib.rest_framework.OAuth2Authentication",
-#		"drf_social_oauth2.authentication.SocialAuthentication",
-#	),
-#}
+REST_FRAMEWORK = {
+	"DEFAULT_AUTHENTICATION_CLASSES": (
+		"oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+		"rest_framework_simplejwt.authentication.JWTAuthentication",
+		"drf_social_oauth2.authentication.SocialAuthentication",
+	),
+}
 
 AUTHENTICATION_BACKENDS = (
+	"drf_social_oauth2.backends.DjangoOAuth2",
 	"social_core.backends.facebook.FacebookOAuth2",
 	"django.contrib.auth.backends.ModelBackend",
 )
@@ -174,10 +179,6 @@ EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
 EMAIL_USE_TLS = True
 DEFAULT_FROM_EMAIL = "TailorApp<no_reply@domain.com>"
 
-REST_KNOX = {
-	"TOKEN_TTL": timedelta(hours=120),
-	"TOKEN_LIMIT_PER_USER": None
-}
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
 	"CLASS": "django_rest_passwordreset.tokens.RandomNumberTokenGenerator",
@@ -211,6 +212,44 @@ SOCIAL_AUTH_PIPELINE = (
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
 LOGIN_REDIRECT_URL = "api:login"
+
+#REST_FRAMEWORK = {
+#    'DEFAULT_AUTHENTICATION_CLASSES': (
+#        'rest_framework_simplejwt.authentication.JWTAuthentication',
+#    )
+#}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
+
+    'ALGORITHM': 'HS256',
+    'SIGNING_KEY': SECRET_KEY,
+    'VERIFYING_KEY': None,
+    'AUDIENCE': None,
+    'ISSUER': None,
+    'JWK_URL': None,
+    'LEEWAY': 0,
+
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
+    'USER_AUTHENTICATION_RULE': 'rest_framework_simplejwt.authentication.default_user_authentication_rule',
+
+    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'TOKEN_TYPE_CLAIM': 'token_type',
+    'TOKEN_USER_CLASS': 'rest_framework_simplejwt.models.TokenUser',
+
+    'JTI_CLAIM': 'jti',
+
+    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
 
 # when using postgres, uncomment
 # SOCIAL_AUTH_JSONFIELD_ENABLED = True

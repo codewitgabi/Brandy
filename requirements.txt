@@ -5,3 +5,5 @@ django-decouple
 django-rest-knox>=4.2.0
 django-rest-passwordreset
 social-auth-app-django
+djangorestframework-simplejwt
+drf_social_oauth2

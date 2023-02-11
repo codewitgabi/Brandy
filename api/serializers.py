@@ -100,11 +100,16 @@ class ChangePasswordSerializer(serializers.Serializer):
 			required=True,
 			min_length=10)
 			
-		new_password = serializers.CharField(
+		new_password1 = serializers.CharField(
 			style={'input_type': 'password'},
 			required=True,
 			min_length=10)
-	
+			
+		new_password2 = serializers.CharField(
+			style={'input_type': 'password'},
+			required=True,
+			min_length=10)
+			
 
 class OtpSerializer(serializers.Serializer):
 	class Meta:

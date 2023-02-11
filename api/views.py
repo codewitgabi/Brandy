@@ -19,8 +19,9 @@ from rest_framework import generics
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import permissions
+from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.authtoken.serializers import AuthTokenSerializer
-from knox.views import LoginView as KnoxLoginView
 
 """ regular imports """
 import random
@@ -108,17 +109,22 @@ class ResendOtpView(generics.UpdateAPIView):
 				"status": "failure",
 				"message": "Invalid credential provided"},
 				status=status.HTTP_404_NOT_FOUND)
-				
+		
 
-class AppLoginView(KnoxLoginView):
-	permission_classes = (permissions.AllowAny,)
+class LogoutView(APIView):
+	permission_classes = (permissions.IsAuthenticated,)
 	
-	def post(self, request, format=None):
-		serializer = AuthTokenSerializer(data=request.data)
-		serializer.is_valid(raise_exception=True)
-		user = serializer.validated_data['user']
-		login(request, user)
-		return super(AppLoginView, self).post(request, format=None)
+	def post(self, request):
+		try:
+			refresh_token = request.data["refresh_token"]
+			token = RefreshToken(refresh_token)
+			token.blacklist()
+			
+			return Response({
+				"status": "success"
+			}, status=status.HTTP_205_RESET_CONTENT)
+		except Exception as e:
+			return Response(status=status.HTTP_400_BAD_REQUEST)
 		
 
 class ChangePassword(generics.UpdateAPIView):
@@ -129,32 +135,33 @@ class ChangePassword(generics.UpdateAPIView):
 	def update(self, request, *args, **kwargs):
 		user = self.request.user
 		serializer = self.get_serializer(data=request.data)
-		print(request.data)
 		
 		if serializer.is_valid():
 			"""
 			Get Passwords
 			"""
 			old_password = request.data.get("old_password")
-			new_password = request.data.get("new_password")
+			new_password1 = request.data.get("new_password1")
+			new_password2 = request.data.get("new_password2")
 			
 			if not user.check_password(old_password):
 				return Response(
-					{
-						"error": "Value for old password is incorrect"
-					}, status=status.HTTP_400_BAD_REQUEST
-				)
+					{"error": "Value for old password is incorrect"
+					}, status=status.HTTP_400_BAD_REQUEST)
 				
-			if old_password == new_password:
-				return Response(
-					{
-						"status": "failed",
-						"error": "New password cannot have same value as old password"
-					},
-					status=status.HTTP_400_BAD_REQUEST
-				)
+			if old_password == new_password1:
+				return Response({
+					"status": "failed",
+					"error": "New password cannot have same value as old password"},
+					status=status.HTTP_400_BAD_REQUEST)
+			
+			if new_password1 != new_password2:
+				return Response({
+					"status": "failed",
+					"error": "Passwords do not match"},
+					status=status.HTTP_400_BAD_REQUEST)
 				
-			user.set_password(new_password)
+			user.set_password(new_password1)
 			user.save()
 			
 			return Response({
@@ -163,39 +170,5 @@ class ChangePassword(generics.UpdateAPIView):
 			}, status=status.HTTP_200_OK)
 			
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-#from rest_framework import status
-#from rest_framework.authtoken.models import Token
-#from rest_framework.decorators import api_view, permission_classes
-#from rest_framework.permissions import AllowAny
-#from rest_framework.response import Response
-
-#from social_django.utils import psa
-
-#from requests.exceptions import HTTPError
-
-
-#def register_by_access_token(request, backend):
-#    token = request.data.get('access_token')
-#    user = request.backend.do_auth(token)
-#    print(request)
-#    if user:
-#        token, _ = Token.objects.get_or_create(user=user)
-#        return Response(
-#            {
-#                'token': token.key
-#            },
-#            status=status.HTTP_200_OK,
-#            )
-#    else:
-#        return Response(
-#            {
-#                'errors': {
-#                    'token': 'Invalid token'
-#                    }
-#            },
-#            status=status.HTTP_400_BAD_REQUEST,
-#        )
-
+		
 		
