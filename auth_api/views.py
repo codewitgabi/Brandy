@@ -49,14 +49,13 @@ class RegisterView(generics.GenericAPIView):
 	serializer_class = RegisterSerializer
 	
 	def post(self, request, *args, **kwargs):
-	       serializer = self.get_serializer(data=request.data)
-	       serializer.is_valid(raise_exception=True)
-	       user = serializer.save()
-	       return Response({
-	       	"user": UserSerializer(
-	       		user,
-	       		context= self.get_serializer_context()).data,
-			})
+		serializer = self.get_serializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		user = serializer.save()
+		return Response({
+			"status": "success",
+			"id": user.id
+		})
 
 
 @api_view(["GET"])
@@ -88,7 +87,7 @@ def verify_OTP(request, otp):
 		except Otp.DoesNotExist:
 			return Response({
 				"status": "failed",
-				"message": "The given otp does not exist or jas been user."
+				"message": "The given otp does not exist or has been used."
 			}, status= status.HTTP_404_NOT_FOUND)
 			
 

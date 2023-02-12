@@ -6,7 +6,8 @@ from django.utils import timezone
 class User(AbstractUser):
 	id = models.UUIDField(
 		primary_key=True,
-		default=uuid.uuid4)
+		default=uuid.uuid4,
+		editable=False)
 	username = models.CharField(max_length=30)
 	email = models.EmailField(unique=True)
 	followers = models.ManyToManyField(
