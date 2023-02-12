@@ -10,11 +10,11 @@ The project is devided into various django apps. This is to ensure simplicity an
 [auth_api](https://github.com/codewitgabi/tailor_api/tree/main/auth_api)
 * This app holds all endpoint related to user authentication and user listing generally. available endpoints included in this app are;
 
-* __user_list__
-Endpoint ```/auth/api/users/list/```\
+* __user_list__\
+```/auth/api/users/list/```\
 This endpoint returns all the available users (both customers and tailors) excluding superusers and staffs.
-* __user_detail__
-Endpoint ```/auth/api/users/detail/<user_id>```\
+* __user_detail__\
+```/auth/api/users/detail/<user_id>```\
 Returns the detail related to the user having the unique identifier.
 * __user_registration__\
 ```/auth/api/register/```\
