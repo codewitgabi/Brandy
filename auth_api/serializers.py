@@ -14,8 +14,14 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = (
 			"id",
 			"username",
-			"email"
+			"email",
+			"image",
+			"followers",
+			"following",
 		)
+		extra_kwargs = {
+			"email": {"write_only": True}
+		}
 		
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -115,4 +121,5 @@ class OtpSerializer(serializers.Serializer):
 	class Meta:
 		model = Otp
 		fields = ["user.email"]
+		
 		

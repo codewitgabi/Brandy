@@ -4,10 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>otp</title>
+    <title>Password Reset</title>
+    <style>
+        .container {
+            box-shadow: hsl(0,0%,80%) 0 0 5px;
+            border-radius: 5px;
+            width: 90vw;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+        .bg-red {
+            background: red;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px 5px 0 0;
+        }
+        .content {
+            margin: 2em 1em;
+            line-height: 2em;
+        }
+        .content p {
+            font-family: Helvetica;
+            font-weight: 300;
+            font-size: 1.2rem;
+        }
+        .heavy {
+            font-weight: 900;
+            font-size: 1.25rem;
+            letter-spacing: 1.5px;
+        }
+    </style>
 </head>
 <body>
-    <h3>Use this otp to complete your registration.</h3>
-    <b>{{ token }}</b>
+    <div class="container">
+        <div class="bg-red"></div>
+        <div class="content">
+            <p>You otp code is</p>
+            <span class="heavy">{{ token }}</span>
+            <p>Use this code to complete your registration<br><br>
+            <b>Note:</b> This password expires in 2mins</p>
+        </div>
+    </div>
 </body>
 </html>

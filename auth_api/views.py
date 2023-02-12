@@ -12,6 +12,7 @@ from .serializers import (
 	UserSerializer,
 	ChangePasswordSerializer,
 	OtpSerializer)
+from .permissions import IsAccountOwner
 	
 """ rest_framework imports """
 from rest_framework import status
@@ -29,7 +30,22 @@ import random
 User = get_user_model()
 
 
+class UserListView(generics.ListAPIView):
+	serializer_class = UserSerializer
+	queryset = User.objects.filter(
+		is_superuser=False, is_staff=False)
+		
+		
+class UserDetailView(generics.RetrieveAPIView):
+	serializer_class = UserSerializer
+	permission_classes = (IsAccountOwner,)
+	queryset = User.objects.filter(
+		is_superuser=False, is_staff=False)
+	lookup_field = "id"
+	
+
 class RegisterView(generics.GenericAPIView):
+	""" User Registration Handler """
 	serializer_class = RegisterSerializer
 	
 	def post(self, request, *args, **kwargs):
@@ -72,11 +88,14 @@ def verify_OTP(request, otp):
 		except Otp.DoesNotExist:
 			return Response({
 				"status": "failed",
-				"message": "The given otp does not exist"
+				"message": "The given otp does not exist or jas been user."
 			}, status= status.HTTP_404_NOT_FOUND)
 			
 
 class ResendOtpView(generics.UpdateAPIView):
+	"""
+	Resends otp after the first has expired
+	"""
 	serializer_class = OtpSerializer
 	model = User
 	
@@ -112,6 +131,7 @@ class ResendOtpView(generics.UpdateAPIView):
 		
 
 class LogoutView(APIView):
+	""" User Logout Handler """
 	permission_classes = (permissions.IsAuthenticated,)
 	
 	def post(self, request):
@@ -128,6 +148,7 @@ class LogoutView(APIView):
 		
 
 class ChangePassword(generics.UpdateAPIView):
+	""" User Password Change Handler """
 	serializer_class = ChangePasswordSerializer
 	permission_classes = (permissions.IsAuthenticated,)
 	model = User

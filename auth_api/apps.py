@@ -1,9 +1,9 @@
 from django.apps import AppConfig
 
 
-class ApiConfig(AppConfig):
+class AuthApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'api'
-
+    name = 'auth_api'
+    
     def ready(self):
         from . import signals

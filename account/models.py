@@ -5,15 +5,41 @@ from django.utils import timezone
 
 class User(AbstractUser):
 	id = models.UUIDField(
-		primary_key=True, default=uuid.uuid4)
+		primary_key=True,
+		default=uuid.uuid4)
 	username = models.CharField(max_length=30)
 	email = models.EmailField(unique=True)
+	followers = models.ManyToManyField(
+		"self",
+		blank=True,
+		symmetrical=False)
+	following = models.ManyToManyField(
+		"self",
+		blank=True,
+		symmetrical=False,
+		related_name="disciples")
+	image = models.ImageField(upload_to= "profiile-picture/", default= "avatar.jpg")
 	
 	USERNAME_FIELD = "email"
 	REQUIRED_FIELDS = ["username"]
 	
 	def __str__(self):
 		return self.email
+		
+	def save(self, *args, **kwargs):
+		"""
+		Add user instance to followers list
+		"""
+		for user in self.following.all():
+			user.followers.add(self)
+			
+		"""
+		Add user instance to related instance following list
+		"""
+		for user in self.followers.all():
+			user.following.add(self)
+			
+		super().save(*args, **kwargs)
 		
 
 class Otp(models.Model):
@@ -25,7 +51,7 @@ class Otp(models.Model):
 	@property
 	def has_expired(self):
 		delta = timezone.now() - self.date_created
-		# token expires in one minute
+		# token expires in two minutes
 		return delta.seconds > 120
 	
 	def __str__(self):
@@ -33,4 +59,5 @@ class Otp(models.Model):
 		
 	class Meta:
 		ordering = ("-valid",)
+	
 	

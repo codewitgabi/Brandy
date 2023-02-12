@@ -6,8 +6,10 @@ from rest_framework_simplejwt.views import (
 )
 
 
-app_name = "api"
+app_name = "auth_api"
 urlpatterns = [
+	path("users/list/", views.UserListView.as_view(), name="list_users"),
+	path("users/detail/<uuid:id>/", views.UserDetailView.as_view(), name="retrieve_user"),
 	path("register/", views.RegisterView.as_view(), name="register"),
 	path("register/verify-otp/<int:otp>/",
 		views.verify_OTP, name="register_verify_otp"),
