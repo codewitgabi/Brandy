@@ -39,9 +39,18 @@ class Tailor(models.Model):
 		ratings = self.rating_set.all()
 		avg = 0
 		for rating in ratings:
-			avg += float(rating)
+			avg += float(rating.rating)
 		
-		return avg
+		return avg / ratings.count()
+		
+		
+	@property
+	def total_ratings(self):
+		return self.rating_set.all().count()
+		
+	@property
+	def profile_picture(self):
+		return self.user.image.url
 		
 
 class Rating(models.Model):
