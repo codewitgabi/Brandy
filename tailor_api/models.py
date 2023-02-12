@@ -34,6 +34,15 @@ class Tailor(models.Model):
 	def __str__(self):
 		return self.user.username
 		
+	@property
+	def avg_rating(self):
+		ratings = self.rating_set.all()
+		avg = 0
+		for rating in ratings:
+			avg += float(rating)
+		
+		return avg
+		
 
 class Rating(models.Model):
 	""" Allowed tailor rating """
