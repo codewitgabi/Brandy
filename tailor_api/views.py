@@ -13,8 +13,7 @@ from .serializers import (
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
-from rest_framework.renderers import JSONRenderer
+from rest_framework.decorators import api_view, permission_classes
 
 User = get_user_model()
 
@@ -39,6 +38,7 @@ class TailorCreateView(generics.CreateAPIView):
 		serializer.save(user=self.request.user)
 		
 
+@permission_classes([IsAuthenticated])
 @api_view(["PUT"])
 def ratingUpdateWithTailor(request, id):
 	"""
@@ -48,7 +48,7 @@ def ratingUpdateWithTailor(request, id):
 		tailor = Tailor.objects.get(id=id)
 		user = request.user
 		R = Rating.objects.get(user=user, tailor=tailor)
-	except Snippet.DoesNotExist:
+	except Tailor.DoesNotExist:
 		return Response(status=status.HTTP_404_NOT_FOUND)
 		
 	if request.method == "PUT":
