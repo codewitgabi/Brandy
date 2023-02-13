@@ -50,13 +50,13 @@ Returns a list of all available tailors and a full description regarding their r
 * __tailor-creation__\
 ```POST /tailor/api/create/```\
 Creates a new instance of a tailor. Returns a `500` error if it already exists.
-* __rating__
+* __rating__\
 ```POST /tailor/api/rating/```\
 Creates a new rating for a tailor if it doesn't exist.
-* __rating-update-via-Rating__
+* __rating-update-via-Rating__\
 ```PUT /tailor/api/rating/update/<rating_id>/```\
 Updates an existing rating for a particular tailor where the `rating_id` is readily available.
 * __rating-update-via-Tailor__\
-```PUT /tailor/api/rating/update/<tailor_id>/tailor/```
+```PUT /tailor/api/rating/update/<tailor_id>/tailor/```\
 Updates an existimg tailor rating where the `tailor_id` is readily available. This would be used in most cases.
 
