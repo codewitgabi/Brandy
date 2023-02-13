@@ -40,6 +40,13 @@ Changes a user password and then log them out of previously logged in devices
 * __password-reset__\
 ```POST /auth/api/password-reset/```\
 In a case where a user has forgotten their password, this endpoint will send an email to the user with a code to use for verification that the given account is theirs. After that, their password can now be changed.
+* __follow-user__\
+```POST /auth/api/follow/```\
+Follows the user with the id passed in the request body. Returns the followed user on success.
+* __unfollow-user__\
+```POST /auth/api/unfollow/```\
+Unfollows the user with the id passed in the request body. Returns the followed user on success.
+
 
 [tailor_api](https://github.com/codewitgabi/tailor_api/tree/main/tailor_api)\
 This app holds endpoints related to tailors; their rating and personal description. Endpoints always begin with `/tailor/api`.Available endpoints are;

@@ -211,7 +211,7 @@ class FollowUserView(APIView):
 			return Response({
 				"status": "success",
 				"followed": user_to_follow.username
-			})
+			}, status=status.HTTP_201_CREATED)
 		except User.DoesNotExist:
 			return Response({
 				"error": "User with given ID does not exist"
@@ -230,12 +230,12 @@ class UnfollowUserView(APIView):
 		user_id = request.data.get("id")
 		
 		try:
-			user_to_follow = User.objects.get(id=user_id)
-			user_to_follow.followers.remove(user)
-			user_to_follow.save()
+			user_to_unfollow = User.objects.get(id=user_id)
+			user_to_unfollow.followers.remove(user)
+			user_to_unfollow.save()
 			return Response({
 				"status": "success",
-				"unfollowed": user_to_follow.username
+				"unfollowed": user_to_unfollow.username
 			})
 		except User.DoesNotExist:
 			return Response({
