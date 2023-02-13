@@ -14,8 +14,11 @@ This app holds all endpoint related to user authentication and user listing gene
 ```GET /auth/api/users/list/```\
 This endpoint returns all the available users (both customers and tailors) excluding superusers and staffs.
 * __user_detail__\
-```GET /auth/api/users/detail/<user_id>```\
+```GET /auth/api/user/detail/<user_id>```\
 Returns the detail related to the user having the unique identifier.
+* __user-update__\
+```PUT PATCH /auth/api/user/update/<user_id>/```\
+Update the user with the given id. Use `PATCH` for updating a single field. `PUT` request method requires you to update the `username` and `email`.
 * __user_registration__\
 ```POST /auth/api/register/```\
 Endpoint for user registration
@@ -57,6 +60,9 @@ Returns a list of all available tailors and a full description regarding their r
 * __tailor-creation__\
 ```POST /tailor/api/create/```\
 Creates a new instance of a tailor. Returns a `500` error if it already exists.
+* __tailor-update__\
+``` PUT, PATCH /tailor/api/update/<user_id>/```\
+Updates the given tailor using the `user_id` passed in the url.
 * __rating__\
 ```POST /tailor/api/rating/```\
 Creates a new rating for a tailor if it doesn't exist.

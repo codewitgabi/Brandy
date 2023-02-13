@@ -8,6 +8,7 @@ from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
 	TailorRatingSerializer)
+from auth_api.permissions import IsTailorAccountOwner
 
 """ Third-party Imports """
 from rest_framework import generics, status
@@ -35,6 +36,16 @@ class TailorCreateView(generics.CreateAPIView):
 	permission_classes = (IsAuthenticated,)
 	
 	def perform_create(self, serializer):
+		serializer.save(user=self.request.user)
+		
+		
+class TailorUpdateView(generics.UpdateAPIView):
+	serializer_class = TailorSerializer
+	queryset = Tailor.objects.all()
+	permission_classes = (IsAuthenticated, IsTailorAccountOwner)
+	lookup_field = "id"
+	
+	def perform_update(self, serializer):
 		serializer.save(user=self.request.user)
 		
 

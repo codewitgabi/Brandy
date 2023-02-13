@@ -15,6 +15,8 @@ class UserSerializer(serializers.ModelSerializer):
 			"id",
 			"username",
 			"email",
+			"first_name",
+			"last_name",
 			"image",
 			"followers",
 			"following",
@@ -22,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
 		extra_kwargs = {
 			"email": {"write_only": True}
 		}
+		read_only_fields = ("followers", "following")
 		
 
 class RegisterSerializer(serializers.ModelSerializer):

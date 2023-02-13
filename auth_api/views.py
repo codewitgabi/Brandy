@@ -44,6 +44,18 @@ class UserDetailView(generics.RetrieveAPIView):
 		is_superuser=False, is_staff=False)
 	lookup_field = "id"
 	
+	
+class UserUpdateView(generics.UpdateAPIView):
+	"""
+	Update a user instance
+	"""
+	serializer_class = UserSerializer
+	permission_classes = (IsAccountOwner,)
+	queryset = User.objects.filter(
+		is_superuser=False, is_staff=False)
+	lookup_field = "id"
+	
+	
 
 class RegisterView(generics.GenericAPIView):
 	""" User Registration Handler """
