@@ -7,8 +7,8 @@ Backend API for flutter application. It comprises of different features. Some of
 
 The project is divided into various django apps. This is to ensure simplicity and easy debugging since it will be a very lenghty API. Below are a description of all the various apps
 
-[auth_api](https://github.com/codewitgabi/tailor_api/tree/main/auth_api)
-* This app holds all endpoint related to user authentication and user listing generally. available endpoints included in this app are;
+[auth_api](https://github.com/codewitgabi/tailor_api/tree/main/auth_api)\
+This app holds all endpoint related to user authentication and user listing generally. available endpoints included in this app are;
 
 * __user_list__\
 ```GET /auth/api/users/list/```\
@@ -41,7 +41,7 @@ Changes a user password and then log them out of previously logged in devices
 ```POST /auth/api/password-reset/```\
 In a case where a user has forgotten their password, this endpoint will send an email to the user with a code to use for verification that the given account is theirs. After that, their password can now be changed.
 
-[tailor_api](https://github.com/codewitgabi/tailor_api/tree/main/tailor_api)
+[tailor_api](https://github.com/codewitgabi/tailor_api/tree/main/tailor_api)\
 This app holds endpoints related to tailors; their rating and personal description. Endpoints always begin with `/tailor/api`.Available endpoints are;
 
 * __tailors-list__\
