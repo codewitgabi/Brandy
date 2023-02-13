@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 import uuid
 from django.utils import timezone
 
+
 class User(AbstractUser):
 	id = models.UUIDField(
 		primary_key=True,
@@ -10,6 +11,7 @@ class User(AbstractUser):
 		editable=False)
 	username = models.CharField(max_length=30)
 	email = models.EmailField(unique=True)
+	address = models.TextField(null=True, blank=True, default="")
 	followers = models.ManyToManyField(
 		"self",
 		blank=True,

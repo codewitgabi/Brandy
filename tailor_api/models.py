@@ -25,6 +25,9 @@ class Tailor(models.Model):
 		default="Tailor")
 	business_name = models.CharField(max_length=100)
 	phone = models.CharField(max_length=14)
+	wallet_balance = models.DecimalField(max_digits=12, decimal_places=2)
+	money_earned = models.DecimalField(max_digits=12, decimal_places=2)
+	pending_money = models.DecimalField(max_digits=12, decimal_places=2)
 	experience = models.IntegerField(
 		default=1, validators=[MinValueValidator(0)])
 	business_address = models.TextField()
@@ -88,5 +91,49 @@ class Rating(models.Model):
 	
 	def __str__(self):
 		return self.rating
+
+
+class Task(models.Model):
+	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
+	customer = models.ForeignKey(User, on_delete=models.CASCADE)
+	time_created = models.TimeField(auto_now_add=True)
+	due_date = models.DateField()
+	charge = models.DecimalField(max_digits=12, decimal_places=2)
+	delivered = models.BooleanField(default=False)
+	
+	def __str__(self):
+		return self.tailor.user.username
 		
 		
+class TaskReminder(models.Model):
+	message = models.TextField()
+	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
+	task = models.ForeignKey(Task, on_delete=models.CASCADE)
+	
+	def __str__(self):
+		return self.message
+		
+		
+class Measurement(models.Model):
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	crotch_length = models.IntegerField(default=1)
+	center_length = models.IntegerField(default=1)
+	out_seam = models.IntegerField(default=1)
+	waist = models.IntegerField(default=1)
+	In_seam = models.IntegerField(default=1)
+	hip = models.IntegerField(default=1)
+	ankle = models.IntegerField(default=1)
+	bust = models.IntegerField(default=1)
+	height = models.IntegerField(default=1)
+	hight_bust = models.IntegerField(default=1)
+	
+	def __str__(self):
+		return self.user.username
+		
+	def save(self, *args, **kwargs):
+		if Tailor.objects.filter(user= user).exists():
+			raise ValueError("Tailor instances cannot have measurements!")
+		super().save(*args, **kwargs)
+
+
+# availability
