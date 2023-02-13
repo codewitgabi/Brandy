@@ -40,8 +40,11 @@ class Tailor(models.Model):
 		avg = 0
 		for rating in ratings:
 			avg += float(rating.rating)
-		
-		return avg / ratings.count()
+			
+		try:
+			return avg / ratings.count()
+		except ZeroDivisionError:
+			return avg
 		
 		
 	@property
@@ -51,6 +54,14 @@ class Tailor(models.Model):
 	@property
 	def profile_picture(self):
 		return self.user.image.url
+		
+	@property
+	def followers_count(self):
+		return str(self.user.followers.all().count())
+		
+	@property
+	def following_count(self):
+		return str(self.user.following.all().count())
 		
 
 class Rating(models.Model):

@@ -18,6 +18,8 @@ class TailorSerializer(serializers.ModelSerializer):
 			"id",
 			"user",
 			"profile_picture",
+			"followers_count",
+			"following_count",
 			"skill",
 			"business_name",
 			"phone",
