@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
+from django.core.exceptions import ValidationError
 import uuid
 
 User = get_user_model()
@@ -25,9 +26,9 @@ class Tailor(models.Model):
 		default="Tailor")
 	business_name = models.CharField(max_length=100)
 	phone = models.CharField(max_length=14)
-	wallet_balance = models.DecimalField(max_digits=12, decimal_places=2)
-	money_earned = models.DecimalField(max_digits=12, decimal_places=2)
-	pending_money = models.DecimalField(max_digits=12, decimal_places=2)
+	wallet_balance = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+	money_earned = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
+	pending_money = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
 	experience = models.IntegerField(
 		default=1, validators=[MinValueValidator(0)])
 	business_address = models.TextField()
@@ -130,10 +131,10 @@ class Measurement(models.Model):
 	def __str__(self):
 		return self.user.username
 		
-	def save(self, *args, **kwargs):
-		if Tailor.objects.filter(user= user).exists():
-			raise ValueError("Tailor instances cannot have measurements!")
-		super().save(*args, **kwargs)
-
+	def clean(self):
+		if Tailor.objects.filter(user= self.user).exists():
+			raise ValidationError("Tailor instances cannot have measurements!")
+		super(Measurement, self).clean()
+		
 
 # availability

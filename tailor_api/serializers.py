@@ -27,6 +27,9 @@ class TailorSerializer(serializers.ModelSerializer):
 			"business_address",
 			"bank",
 			"account_number",
+			"wallet_balance",
+			"money_earned",
+			"pending_money",
 			"avg_rating",
 			"total_ratings",
 		)
