@@ -123,3 +123,7 @@ class OtpSerializer(serializers.Serializer):
 		fields = ["user.email"]
 		
 		
+class FollowSerializer(serializers.Serializer):
+	id = serializers.UUIDField(format="hex_verbose")
+	
+	

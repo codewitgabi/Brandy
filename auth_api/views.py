@@ -11,7 +11,8 @@ from .serializers import (
 	RegisterSerializer,
 	UserSerializer,
 	ChangePasswordSerializer,
-	OtpSerializer)
+	OtpSerializer,
+	FollowSerializer)
 from .permissions import IsAccountOwner
 	
 """ rest_framework imports """
@@ -191,4 +192,54 @@ class ChangePassword(generics.UpdateAPIView):
 			
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		
+	
+class FollowUserView(APIView):
+	"""
+	Follow user handler
+	"""
+	serializer_class = (FollowSerializer,)
+	permission_classes = (permissions.IsAuthenticated,)
+	
+	def post(self, request):
+		user = request.user
+		user_id = request.data.get("id")
 		
+		try:
+			user_to_follow = User.objects.get(id=user_id)
+			user_to_follow.followers.add(user)
+			user_to_follow.save()
+			return Response({
+				"status": "success",
+				"followed": user_to_follow.username
+			})
+		except User.DoesNotExist:
+			return Response({
+				"error": "User with given ID does not exist"
+			}, status=status.HTTP_404_NOT_FOUND)
+			
+
+class UnfollowUserView(APIView):
+	"""
+	Unfollow user handler
+	"""
+	serializer_class = (FollowSerializer,)
+	permission_classes = (permissions.IsAuthenticated,)
+	
+	def post(self, request):
+		user = request.user
+		user_id = request.data.get("id")
+		
+		try:
+			user_to_follow = User.objects.get(id=user_id)
+			user_to_follow.followers.remove(user)
+			user_to_follow.save()
+			return Response({
+				"status": "success",
+				"unfollowed": user_to_follow.username
+			})
+		except User.DoesNotExist:
+			return Response({
+				"error": "User with given ID does not exist"
+			}, status=status.HTTP_404_NOT_FOUND)
+			
+			

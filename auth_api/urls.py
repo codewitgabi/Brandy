@@ -39,4 +39,10 @@ urlpatterns = [
 	path("password-reset/",
 		include("django_rest_passwordreset.urls", 
 			namespace="password_reset")),
+	path("follow/",
+		views.FollowUserView.as_view(),
+		name="follow"),
+	path("unfollow/",
+		views.UnfollowUserView.as_view(),
+		name="unfollow"),
 ]
