@@ -87,7 +87,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 		symbols = "@#_~[]{}()$&?%/"
 		
 		""" MinimumLengthValidator """
-		if len(value) < 10:
+		if len(value) < 8:
 			raise serializers.ValidationError("Password is too short.")
 		
 		""" CommonPasswordValidator """

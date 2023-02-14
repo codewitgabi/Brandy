@@ -18,22 +18,10 @@ class TailorSerializer(serializers.ModelSerializer):
 			"id",
 			"user",
 			"profile_picture",
-			"followers_count",
-			"following_count",
 			"skill",
-			"business_name",
-			"phone",
-			"experience",
 			"business_address",
-			"bank",
-			"account_number",
-			"wallet_balance",
-			"money_earned",
-			"pending_money",
 			"avg_rating",
 			"total_ratings",
-			"task_list",
-			"reminders",
 		)
 		
 		
