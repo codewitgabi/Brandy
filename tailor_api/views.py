@@ -121,9 +121,14 @@ class GetCustomerDetail(APIView):
 	def get(self, request):
 		user = request.user.tailor
 		tasks = user.task_set.all()
+		data = []
 		serializer = CustomerListingSerializer(tasks, many=True)
 		
-		return Response(serializer.data)
+		for d in serializer.data:
+			if not d in data:
+				data.append(d)
+				
+		return Response(data)
 		
 		
 class TailorDashboardView(APIView):
