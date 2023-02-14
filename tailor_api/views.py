@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.contrib.auth import get_user_model
 
 """ Custom Imports """
-from .models import Tailor, Rating
+from .models import Tailor, Rating, TaskReminder, Task
 from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
@@ -11,6 +11,9 @@ from .serializers import (
 	CustomerListingSerializer,
 	TailorDashboardSerializer)
 from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
+from threading import Thread
+from datetime import date
+import time
 
 """ Third-party Imports """
 from rest_framework import generics, status
@@ -20,6 +23,41 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 
 User = get_user_model()
+
+def create_reminders():
+	keep_alive = True
+	while keep_alive:
+		time.sleep(0.1)
+		tasks = Task.objects.all()
+		for task in tasks:
+			delta = task.due_date - date.today()
+			print(delta.days)
+			# create 2 days reminder
+			if delta.days == 2:
+				try:
+					TaskReminder.objects.get(
+						task=task,
+						message="You have 48 hours to complete this task")
+				except TaskReminder.DoesNotExist:
+					TaskReminder.objects.create(
+						tailor=task.tailor,
+						task=task,
+						message="You have 48 hours to complete this task")
+			
+			# create 1 day reminder
+			if delta.days == 1:
+				try:
+					TaskReminder.objects.get(
+						task=task,
+						message="You have 24 hours to complete this task")
+				except TaskReminder.DoesNotExist:
+					TaskReminder.objects.create(
+						tailor=task.tailor,
+						task=task,
+						message="You have 24 hours to complete this task")
+		
+t = Thread(target=create_reminders)
+t.start()
 
 
 class TailorListView(generics.ListAPIView):

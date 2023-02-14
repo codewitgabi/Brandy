@@ -115,7 +115,7 @@ class Task(models.Model):
 	delivered = models.BooleanField(default=False)
 	
 	def __str__(self):
-		return self.tailor.user.username
+		return self.customer.username
 		
 	@property
 	def phone(self):
