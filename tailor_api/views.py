@@ -117,6 +117,9 @@ class RatingUpdateView(generics.UpdateAPIView):
 
 
 class GetCustomerDetail(APIView):
+	"""
+	Get Tailors customers list
+	"""
 	permission_classes = (IsAuthenticated, IsAccountOwner)
 	def get(self, request):
 		user = request.user.tailor
@@ -136,8 +139,11 @@ class TailorDashboardView(APIView):
 	Returns data to be used for a tailors dashboard
 	"""
 	def get(self, request):
-		user = request.user.tailor
-		serializer = TailorDashboardSerializer(user)
-		return Response(serializer.data)
+		try:
+			user = request.user.tailor
+			serializer = TailorDashboardSerializer(user)
+			return Response(serializer.data)
+		except:
+			return Response(status=status.HTTP_423_LOCKED)
 		
 		
