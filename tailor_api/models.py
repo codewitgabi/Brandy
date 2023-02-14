@@ -77,7 +77,11 @@ class Tailor(models.Model):
 		
 	@property
 	def reminders(self):
-		return self.taskreminder_set.all()
+		data = []
+		r = self.taskreminder_set.all()
+		for i in r:
+			data.append(i.message)
+		return data
 		
 
 class Rating(models.Model):

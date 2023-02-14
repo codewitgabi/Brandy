@@ -31,7 +31,6 @@ def create_reminders():
 		tasks = Task.objects.all()
 		for task in tasks:
 			delta = task.due_date - date.today()
-			print(delta.days)
 			# create 2 days reminder
 			if delta.days == 2:
 				try:
