@@ -7,14 +7,17 @@ from .models import Tailor, Rating
 from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
-	TailorRatingSerializer)
-from auth_api.permissions import IsTailorAccountOwner
+	TailorRatingSerializer,
+	CustomerListingSerializer,
+	TailorDashboardSerializer)
+from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 
 """ Third-party Imports """
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
 
 User = get_user_model()
 
@@ -111,5 +114,25 @@ class RatingUpdateView(generics.UpdateAPIView):
 
 	def perform_update(self, serializer):
 		serializer.save(user=self.request.user)
+
+
+class GetCustomerDetail(APIView):
+	permission_classes = (IsAuthenticated, IsAccountOwner)
+	def get(self, request):
+		user = request.user.tailor
+		tasks = user.task_set.all()
+		serializer = CustomerListingSerializer(tasks, many=True)
+		
+		return Response(serializer.data)
+		
+		
+class TailorDashboardView(APIView):
+	"""
+	Returns data to be used for a tailors dashboard
+	"""
+	def get(self, request):
+		user = request.user.tailor
+		serializer = TailorDashboardSerializer(user)
+		return Response(serializer.data)
 		
 		

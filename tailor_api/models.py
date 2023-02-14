@@ -69,7 +69,11 @@ class Tailor(models.Model):
 		
 	@property
 	def task_list(self):
-		return self.task_set.values()
+		data = []
+		tasks = self.task_set.all()
+		for task in tasks:
+			data.append(task.customer.image.url)
+		return data
 		
 	@property
 	def reminders(self):
@@ -112,6 +116,38 @@ class Task(models.Model):
 	
 	def __str__(self):
 		return self.tailor.user.username
+		
+	@property
+	def phone(self):
+		return self.customer.phone
+		
+	@property
+	def address(self):
+		return self.customer.address
+		
+	@property
+	def image(self):
+		return self.customer.image.url
+		
+	@property
+	def username(self):
+		return self.customer.username
+		
+	@property
+	def measurement(self):
+		m = self.customer.measurement
+		return {
+			"crotch_length": m.crotch_length,
+			"center_length": m.center_length,
+			"out_seam": m.out_seam,
+			"waist": m.waist,
+			"In_seam": m.In_seam,
+			"hip": m.hip,
+			"ankle": m.ankle,
+			"bust": m.bust,
+			"height": m.height,
+			"hight_bust": m.hight_bust
+		}
 		
 		
 class TaskReminder(models.Model):

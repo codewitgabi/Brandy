@@ -25,4 +25,10 @@ urlpatterns = [
 	path("rating/update/<uuid:id>/tailor/",
 		views.ratingUpdateWithTailor,
 		name="tailor_rating_update"),
+	path("get-customers/",
+		views.GetCustomerDetail.as_view(),
+		name="get_customers"),
+	path("dashboard/",
+		views.TailorDashboardView.as_view(),
+		name="tailor-dashboard"),
 ]

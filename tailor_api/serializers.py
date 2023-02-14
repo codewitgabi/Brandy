@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tailor, Rating
+from .models import Tailor, Rating, Task
 
 
 """
@@ -60,5 +60,27 @@ class RatingSerializer(serializers.ModelSerializer):
 			"tailor"
 		)
 		read_only_fields = ("user", "id")
-		
-		
+
+
+class CustomerListingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Task
+		fields = (
+			"username",
+			"address",
+			"image",
+			"phone",
+			"measurement",
+		)
+
+
+class TailorDashboardSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Tailor
+		fields = (
+			"wallet_balance",
+			"money_earned",
+			"pending_money",
+			"reminders",
+			"task_list",
+		)

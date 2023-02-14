@@ -12,6 +12,7 @@ class User(AbstractUser):
 	username = models.CharField(max_length=30)
 	email = models.EmailField(unique=True)
 	address = models.TextField(null=True, blank=True, default="")
+	phone = models.CharField(max_length=14)
 	followers = models.ManyToManyField(
 		"self",
 		blank=True,
