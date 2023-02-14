@@ -37,8 +37,15 @@ class TailorCreateView(generics.CreateAPIView):
 	
 	def perform_create(self, serializer):
 		serializer.save(user=self.request.user)
-		
-		
+
+
+class TailorDetailView(generics.RetrieveAPIView):
+	serializer_class = TailorSerializer
+	queryset = Tailor.objects.all()
+	permission_classes = (IsAuthenticated, IsTailorAccountOwner)
+	lookup_field = "id"
+	
+	
 class TailorUpdateView(generics.UpdateAPIView):
 	serializer_class = TailorSerializer
 	queryset = Tailor.objects.all()

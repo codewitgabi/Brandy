@@ -32,6 +32,8 @@ class TailorSerializer(serializers.ModelSerializer):
 			"pending_money",
 			"avg_rating",
 			"total_ratings",
+			"task_list",
+			"reminders",
 		)
 		
 		

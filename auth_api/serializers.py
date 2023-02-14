@@ -18,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
 			"first_name",
 			"last_name",
 			"image",
+			"address",
 			"followers",
 			"following",
 		)

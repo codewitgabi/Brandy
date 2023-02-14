@@ -67,6 +67,14 @@ class Tailor(models.Model):
 	def following_count(self):
 		return str(self.user.following.all().count())
 		
+	@property
+	def task_list(self):
+		return self.task_set.values()
+		
+	@property
+	def reminders(self):
+		return self.taskreminder_set.all()
+		
 
 class Rating(models.Model):
 	""" Allowed tailor rating """
