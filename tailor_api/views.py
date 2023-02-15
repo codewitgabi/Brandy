@@ -36,7 +36,7 @@ def create_reminders():
 			dt = to_datetime - cur
 			mins, _ = divmod(dt.total_seconds(), 60)
 			mins = int(mins)
-			print(mins)
+
 			# create 1 day reminder
 			if mins == 1_440:
 				try:

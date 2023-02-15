@@ -1,62 +1,55 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 import uuid
+from tailor_api.models import Tailor
+from django.core.exceptions import ValidationError
 
 # current user model
 User = get_user_model()
 
 
-class Category(models.Model):
-		
-	CLOTH_CATEGORIES = [
-		("Men", "Men"),
-		("Women", "Women"),
-		("Babies", "Babies"),
-		("Teenagers", "Teenagers")
-	]
-	
-	name = models.CharField(
-		max_length=9,
-		default="Men",
-		choices= CLOTH_CATEGORIES)
-		
-	class Meta:
-		verbose_name_plural = "Categories"
-		
-	def __str__(self):
-		return self.name
-
-
 class SubCategory(models.Model):
-	name = models.CharField(max_length=10)
-	category = models.ForeignKey(Category, on_delete=models.CASCADE)
+	name = models.CharField(max_length=20)
 	
 	class Meta:
 		verbose_name_plural = "Sub-Categories"
+		
+	def save(self, *args, **kwargs):
+		self.name = self.name.title()
+		super().save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.name
 
 
 class Color(models.Model):
-	name = models.CharField(max_length=20)
+	name = models.CharField(max_length=20, unique=True)
+	
+	def clean(self):			
+		if Color.objects.filter(name=self.name.title()).exists():
+			raise ValidationError("Color Already exists")
+	
+	def save(self, *args, **kwargs):
+		self.name = self.name.title()
+		super().save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.name
-		
-		
-class Length(models.Model):
-	size = models.CharField(max_length=20)
-	
-	def __str__(self):
-		return self.size
 
 
 class Material(models.Model):
 	name = models.CharField(max_length=30)
 	
 	def __str__(self):
-		return self.name 
+		return self.name
+
+	
+class ClothImage(models.Model):
+	image = models.ImageField(upload_to="cloth/")
+	cloth = models.ForeignKey("Cloth", on_delete=models.DO_NOTHING)
+	
+	def __str__(self):
+		self.cloth
 
 
 class Cloth(models.Model):
@@ -69,31 +62,47 @@ class Cloth(models.Model):
 		("XXXL", "XXXL")
 	]
 	
+	CLOTH_CATEGORIES = [
+		("Men", "Men"),
+		("Women", "Women"),
+		("Babies", "Babies"),
+		("Teenagers", "Teenagers")
+	]
+	
+	LENGTH_CHOICES = [
+		("Short", "Short"),
+		("Half", "Half"),
+		("Long", "Long"),
+		("Sleeveless", "Sleeveless")
+	]
+	
 	id = models.UUIDField(
 		primary_key=True,
 		default=uuid.uuid4,
 		editable=False)
 	description = models.CharField(max_length=50)
+	category = models.CharField(max_length=9, choices= CLOTH_CATEGORIES, default= "Men")
+	sub_category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
 	price = models.DecimalField(
 		max_digits=8, decimal_places=2, default=0.00)
 	discount = models.IntegerField(default=0)
-	image = models.ImageField(upload_to="cloth/")
 	uploader = models.ForeignKey(
-		User, on_delete=models.CASCADE)
-	available_sizes = models.CharField(
+		Tailor, on_delete=models.CASCADE)
+	size = models.CharField(
 		max_length=4, choices= SIZE_CHOICES, default="L")
-	available_colors = models.ForeignKey(
-		Color, on_delete=models.DO_NOTHING)
-	length = models.ManyToManyField(Length, symmetrical=False)
+	available_colors = models.ManyToManyField(
+		Color)
+	length = models.CharField(
+		max_length=10, choices=LENGTH_CHOICES, default="Short")
 	material_type = models.ForeignKey(Material, on_delete=models.SET_NULL, null=True)
 	date_created = models.DateTimeField(auto_now_add=True)
 	
 	@property
 	def new_price(self):
-		pass
+		return (self.price * self.discount) / 100
 		
 	def __str__(self):
-		return
+		return str(self.id)
 
 
 class Cart(models.Model):
@@ -151,6 +160,7 @@ class Like(models.Model):
 class Comment(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 	comment = models.TextField()
+	cloth = models.ForeignKey(Cloth, on_delete=models.CASCADE)
 	date_created = models.DateTimeField(auto_now_add=True)
 	
 	def __str__(self):
