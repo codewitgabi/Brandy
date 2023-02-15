@@ -12,7 +12,7 @@ from .serializers import (
 	TailorDashboardSerializer)
 from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 from threading import Thread
-from datetime import date
+from datetime import datetime, date
 import time
 
 """ Third-party Imports """
@@ -25,35 +25,53 @@ from rest_framework.views import APIView
 User = get_user_model()
 
 def create_reminders():
-	keep_alive = True
-	while keep_alive:
-		time.sleep(0.1)
-		tasks = Task.objects.all()
+	while True:
+		time.sleep(1)
+		tasks = Task.objects.filter(delivered=False)
 		for task in tasks:
-			delta = task.due_date - date.today()
-			# create 2 days reminder
-			if delta.days == 2:
-				try:
-					TaskReminder.objects.get(
-						task=task,
-						message="You have 48 hours to complete this task")
-				except TaskReminder.DoesNotExist:
-					TaskReminder.objects.create(
-						tailor=task.tailor,
-						task=task,
-						message="You have 48 hours to complete this task")
+			year, month, day = task.due_date.year, task.due_date.month, task.due_date.day
+			cur = datetime.now()
+			to_datetime = datetime(year, month, day)
 			
+			dt = to_datetime - cur
+			mins, _ = divmod(dt.total_seconds(), 60)
+			mins = int(mins)
+			print(mins)
 			# create 1 day reminder
-			if delta.days == 1:
+			if mins == 1_440:
 				try:
 					TaskReminder.objects.get(
 						task=task,
-						message="You have 24 hours to complete this task")
+						message="You have 24 hours to complete this task",)
 				except TaskReminder.DoesNotExist:
 					TaskReminder.objects.create(
 						tailor=task.tailor,
 						task=task,
 						message="You have 24 hours to complete this task")
+			
+			# create 12 hrs reminder
+			if mins == 720:
+				try:
+					TaskReminder.objects.get(
+						task=task,
+						message="You have 12 hours to complete this task")
+				except TaskReminder.DoesNotExist:
+					TaskReminder.objects.create(
+						tailor=task.tailor,
+						task=task,
+						message="You have 12 hours to complete this task")
+			
+			# creates 6 hrs reminder
+			if mins == 360:
+				try:
+					TaskReminder.objects.get(
+						task=task,
+						message="You have 6 hours to complete this task")
+				except TaskReminder.DoesNotExist:
+					TaskReminder.objects.create(
+						tailor=task.tailor,
+						task=task,
+						message="You have 6 hours to complete this task")
 		
 t = Thread(target=create_reminders)
 t.start()

@@ -70,7 +70,7 @@ class Tailor(models.Model):
 	@property
 	def task_list(self):
 		data = []
-		tasks = self.task_set.all()
+		tasks = self.task_set.filter(delivered=False)
 		for task in tasks:
 			data.append(task.customer.image.url)
 		return data
