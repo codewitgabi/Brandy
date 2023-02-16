@@ -9,15 +9,17 @@ class ClothUploadSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Cloth
 		fields = (
+			"id",
 			"description",
 			"category",
 			"sub_category",
 			"price",
+			"discount",
 			"available_colors",
 			"material",
 			"size",
 			"length",
 			"image",
 		)
-		
+		read_only_fields = ["id"]
 		
