@@ -36,7 +36,23 @@ class ClothUpdateView(generics.RetrieveUpdateAPIView):
 	queryset = Cloth.objects.all()
 	lookup_field = "id"
 	
+	def patch(self, request, *args, **kwargs):
+		id = self.kwargs.get("id")
+		prev_img = Cloth.objects.get(id=id).image
+		image = request.data.get("image") if request.data.get("image") is not None else prev_img
+		print(request.data)
+		serializer = ClothUploadSerializer(
+			instance= Cloth.objects.get(id=id),
+			partial=True,
+			data=request.data,
+		)
+		if serializer.is_valid():
+			serializer.save(image=image)
+			return Response({"status": "success", "data": serializer.data})
+		return Response(serializer.errors)
+	
 	def perform_update(self, serializer):
 		image = self.request.data.get("image")
 		serializer.save(image=image, uploader=self.request.user.tailor)
-	
+
+
