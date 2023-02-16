@@ -8,50 +8,6 @@ from django.core.exceptions import ValidationError
 User = get_user_model()
 
 
-class SubCategory(models.Model):
-	name = models.CharField(max_length=20)
-	
-	class Meta:
-		verbose_name_plural = "Sub-Categories"
-		
-	def save(self, *args, **kwargs):
-		self.name = self.name.title()
-		super().save(*args, **kwargs)
-	
-	def __str__(self):
-		return self.name
-
-
-class Color(models.Model):
-	name = models.CharField(max_length=20, unique=True)
-	
-	def clean(self):			
-		if Color.objects.filter(name=self.name.title()).exists():
-			raise ValidationError("Color Already exists")
-	
-	def save(self, *args, **kwargs):
-		self.name = self.name.title()
-		super().save(*args, **kwargs)
-	
-	def __str__(self):
-		return self.name
-
-
-class Material(models.Model):
-	name = models.CharField(max_length=30)
-	
-	def __str__(self):
-		return self.name
-
-	
-class ClothImage(models.Model):
-	image = models.ImageField(upload_to="cloth/")
-	cloth = models.ForeignKey("Cloth", on_delete=models.DO_NOTHING)
-	
-	def __str__(self):
-		self.cloth
-
-
 class Cloth(models.Model):
 	SIZE_CHOICES = [
 		("S", "S"),
@@ -82,27 +38,31 @@ class Cloth(models.Model):
 		editable=False)
 	description = models.CharField(max_length=50)
 	category = models.CharField(max_length=9, choices= CLOTH_CATEGORIES, default= "Men")
-	sub_category = models.ForeignKey(SubCategory, on_delete=models.DO_NOTHING)
+	sub_category = models.CharField(max_length=30)
 	price = models.DecimalField(
 		max_digits=8, decimal_places=2, default=0.00)
 	discount = models.IntegerField(default=0)
 	uploader = models.ForeignKey(
 		Tailor, on_delete=models.CASCADE)
+	image = models.ImageField(upload_to="cloth/")
 	size = models.CharField(
 		max_length=4, choices= SIZE_CHOICES, default="L")
-	available_colors = models.ManyToManyField(
-		Color)
+	available_colors = models.CharField(max_length=30)
 	length = models.CharField(
 		max_length=10, choices=LENGTH_CHOICES, default="Short")
-	material_type = models.ForeignKey(Material, on_delete=models.SET_NULL, null=True)
+	material = models.CharField(max_length=30)
 	date_created = models.DateTimeField(auto_now_add=True)
+	
+	def save(self, *args, **kwargs):
+		self.material = self.material.title()
+		super().save(*args, **kwargs)
 	
 	@property
 	def new_price(self):
 		return (self.price * self.discount) / 100
 		
 	def __str__(self):
-		return str(self.id)
+		return self.category
 
 
 class Cart(models.Model):

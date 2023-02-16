@@ -9,6 +9,7 @@ urlpatterns = [
     path("auth/api/", include("auth_api.urls")),
     path("shop/api/", include("shop_api.urls")),
     path("tailor/api/", include("tailor_api.urls")),
+    path('api-auth/', include('rest_framework.urls')),
 ]
 
 
