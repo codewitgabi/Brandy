@@ -127,9 +127,14 @@ class GetTransactionNotificationView(generics.ListAPIView):
 		return Response(serializer.data)
 		
 		
-class AddToFavorite(generics.CreateAPIView):
+class AddClothToFavorite(generics.CreateAPIView):
 	serializer_class = FavoriteSerializer
-	permission_classes = (IsAuthenticated,)
+	permission_classes = (IsAuthenticated, )
 	queryset = Favorite.objects.all()
-	
-	
+
+
+class RemoveClothFromFavorite(generics.DestroyAPIView):
+	serializer_class = FavoriteSerializer
+	permission_classes = (IsAuthenticated, )
+	queryset = Favorite.objects.all()
+	lookup_field = "id"

@@ -11,7 +11,9 @@ urlpatterns = [
 	path("product/update/<uuid:id>/",
 		views.ClothUpdateView.as_view()),
 	path("product/add-to-fav/",
-		views.AddToFavorite.as_view()),
+		views.AddClothToFavorite.as_view()),
+	path("product/remove-from-fav/<int:id>/",
+		views.RemoveClothFromFavorite.as_view()),
 	path("transactions/",
 		views.GetTransactionNotificationView.as_view()),
 ]
