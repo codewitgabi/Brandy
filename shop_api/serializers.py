@@ -61,6 +61,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 		fields = ("cloth", "image")
 	
 	def create(self, validated_data):
+		# Get request object
 		request = self.context.get("request")
 		cloth = validated_data.get("cloth")
 		if request:
@@ -76,3 +77,24 @@ class FavoriteSerializer(serializers.ModelSerializer):
 			fav = Favorite.objects.get(user=user, cloth=cloth)
 			
 		return fav
+
+
+class CommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Comment
+		exclude = ("id",)
+		
+	def create(self, validated_data):
+		# Get request object
+		request = self.context.get("request")
+		if request:
+			user = request.user
+		comment = Comment.objects.create(
+			user=user,
+			comment=validated_data.get("comment"),
+			cloth=validated_data.get("cloth")
+		)
+		
+		comment.save()
+		return comment
+

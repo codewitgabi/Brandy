@@ -7,7 +7,8 @@ from .serializers import (
 	ClothUploadSerializer,
 	TransactionNotificationSerializer,
 	ClothSerializer,
-	FavoriteSerializer)
+	FavoriteSerializer,
+	CommentSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 
@@ -152,3 +153,9 @@ class ListFavorites(generics.ListAPIView):
 		return Response(serializer.data)
 
 
+class ClothCommentCreateView(generics.CreateAPIView):
+	serializer_class = CommentSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = Comment.objects.all()
+	
+	

@@ -16,6 +16,8 @@ urlpatterns = [
 		views.RemoveClothFromFavorite.as_view()),
 	path("product/favorites/list/",
 		views.ListFavorites.as_view()),
+	path("product/comment/create/",
+		views.ClothCommentCreateView.as_view()),
 	path("transactions/",
 		views.GetTransactionNotificationView.as_view()),
 ]
