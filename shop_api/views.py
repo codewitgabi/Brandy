@@ -1,5 +1,6 @@
 """ Django imports """
 from django.shortcuts import render
+from django.db.models import Q
 
 """ Custom imports """
 from .serializers import (
@@ -81,10 +82,13 @@ class ClothListView(generics.ListAPIView):
 	queryset = Cloth.objects.all()
 	
 	def list(self, request):
-		category = request.query_params.get("category", "")
+		category = request.query_params.get("q", "")
+		sub_category = request.query_params.get("category", "")
 		queryset = self.get_queryset()
 		queryset = queryset.filter(
-			category__icontains=category).order_by("?")
+			Q(category__icontains=category) &
+			Q(sub_category__icontains=sub_category)
+		).order_by("?")
 		serializer = ClothSerializer(queryset, many=True)
 		return Response(serializer.data)
 		
