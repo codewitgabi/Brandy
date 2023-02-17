@@ -85,7 +85,7 @@ Creates a cloth instance and save it to the database.
 Gets all product uploaded by a particular tailor. Requires authentication and the user must be a tailor instance to be able to see result else an invalid response is raised.
 * __product-list__\
 ```GET /shop/api/product/list/```\
-Gets all the cloth available. To get cloth based on category, pass the category as a query parameter to the url. e.g `/shop/api/product/list/?category=Men` returns all men-related cloth.
+Gets all the cloth available. To get cloth based on category, pass the category as a query parameter to the url. e.g `/shop/api/product/list/?q=<category_query>` returns all men-related cloth. There are certain filters like category on the cloth section page. For that, also pass it as a query parameter in the manner. `/shop/api/product/list/?category=<subcategory_query>`. Note that you can pass these two params together by using the `&` operator.
 * __product-update__\
 ``` PATCH PUT /shop/api/product/update/<uuid:id>/```\
 Updates an uploaded product using its given uuid. The get the best result, use a `PATCH` request.
