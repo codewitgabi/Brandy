@@ -89,6 +89,18 @@ Gets all the cloth available. To get cloth based on category, pass the category 
 * __product-update__\
 ``` PATCH PUT /shop/api/product/update/<uuid:id>/```\
 Updates an uploaded product using its given uuid. The get the best result, use a `PATCH` request.
+* __add-to-favorite__\
+```POST /shop/api/product/add-to-fav/```\
+Adds a product to your favorite list.
+* __remove-from-favorite__\
+```DELETE /shop/api/product/remove-from-fav/<int:id>/```\
+Removes a product from a user's favorite list.
+* __favorite-list__\
+```GET /shop/api/product/favorites/list/```\
+Returns a list of all the products in a users favorite list
+* __product-create-comment__\
+```POST /shop/api/product/comment/create/```\
+Creates a comment related to a product.
 * __transactions__\
 ```GET /shop/api/transactions/```\
 Returns a list of all transactions made by a tailor. Can only be accessed by a tailor.
