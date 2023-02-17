@@ -1,5 +1,7 @@
 from django.shortcuts import render
-from .serializers import ClothUploadSerializer
+from .serializers import (
+	ClothUploadSerializer,
+	TransactionNotificationSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 from rest_framework.views import APIView
@@ -56,3 +58,13 @@ class ClothUpdateView(generics.RetrieveUpdateAPIView):
 		serializer.save(image=image, uploader=self.request.user.tailor)
 
 
+class GetTransactionNotificationView(generics.ListAPIView):
+	serializer_class = TransactionNotificationSerializer
+	permission_classes = (IsAuthenticated, IsTailor)
+	queryset = TransactionNotification.objects.all()
+	
+	def list(self, request):
+		queryset = self.get_queryset()
+		queryset = queryset.filter(tailor=request.user.tailor)
+		serializer = TransactionNotificationSerializer(queryset, many=True)
+		return Response(serializer.data)

@@ -59,11 +59,25 @@ class Cloth(models.Model):
 	
 	@property
 	def new_price(self):
-		return (self.price * self.discount) / 100
+		return ((self.price * self.discount) / 100) + self.price
 		
 	def __str__(self):
 		return self.category
 
+
+class TransactionNotification(models.Model):
+	tailor = models.ForeignKey(
+		Tailor, on_delete=models.CASCADE)
+	message = models.TextField()
+	cloth = models.ForeignKey(Cloth, on_delete=models.DO_NOTHING)
+	
+	def __str__(self):
+		return self.message
+		
+	@property
+	def pay(self):
+		return self.cloth.price
+		
 
 class Cart(models.Model):
 	id = models.UUIDField(

@@ -15,6 +15,7 @@ class ClothUploadSerializer(serializers.ModelSerializer):
 			"sub_category",
 			"price",
 			"discount",
+			"new_price",
 			"available_colors",
 			"material",
 			"size",
@@ -22,4 +23,16 @@ class ClothUploadSerializer(serializers.ModelSerializer):
 			"image",
 		)
 		read_only_fields = ["id"]
+
+
+class TransactionNotificationSerializer(
+	serializers.ModelSerializer):
+	class Meta:
+		model = TransactionNotification
+		fields = (
+			"tailor",
+			"message",
+			"pay"
+		)
+		
 		

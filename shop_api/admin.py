@@ -13,4 +13,4 @@ admin.site.register(ClothRating)
 admin.site.register(Like)
 admin.site.register(Comment)
 admin.site.register(FAQ)
-
+admin.site.register(TransactionNotification)
