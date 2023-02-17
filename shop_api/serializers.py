@@ -98,3 +98,10 @@ class CommentSerializer(serializers.ModelSerializer):
 		comment.save()
 		return comment
 
+
+class RetrieveCommentSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Cloth
+		fields = (
+			"comments",
+		)

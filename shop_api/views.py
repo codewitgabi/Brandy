@@ -8,7 +8,8 @@ from .serializers import (
 	TransactionNotificationSerializer,
 	ClothSerializer,
 	FavoriteSerializer,
-	CommentSerializer)
+	CommentSerializer,
+	RetrieveCommentSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 
@@ -157,5 +158,12 @@ class ClothCommentCreateView(generics.CreateAPIView):
 	serializer_class = CommentSerializer
 	permission_classes = (IsAuthenticated,)
 	queryset = Comment.objects.all()
+
+
+class RetrieveCommentView(generics.RetrieveAPIView):
+	serializer_class = RetrieveCommentSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = Cloth.objects.all()
+	lookup_field = "id"
 	
 	

@@ -61,6 +61,19 @@ class Cloth(models.Model):
 	def new_price(self):
 		return self.price - ((self.price * self.discount) / 100)
 		
+	@property
+	def comments(self):
+		queryset = self.comment_set.all().values()
+		data = []
+		
+		for i in queryset:
+			d = {}
+			d["user"] = User.objects.get(id=i.get("user_id")).username
+			d["comment"] = i.get("comment")
+			data.append(d)
+		
+		return data
+		
 	def __str__(self):
 		return str(self.id)
 
@@ -139,6 +152,9 @@ class Comment(models.Model):
 	
 	def __str__(self):
 		return self.comment[:30]
+	
+	class Meta:
+		ordering = ["-date_created"]
 		
 
 class FAQ(models.Model):
