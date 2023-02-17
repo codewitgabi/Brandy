@@ -59,7 +59,7 @@ class Cloth(models.Model):
 	
 	@property
 	def new_price(self):
-		return ((self.price * self.discount) / 100) + self.price
+		return self.price - ((self.price * self.discount) / 100)
 		
 	def __str__(self):
 		return self.category
