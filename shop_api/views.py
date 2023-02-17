@@ -138,3 +138,17 @@ class RemoveClothFromFavorite(generics.DestroyAPIView):
 	permission_classes = (IsAuthenticated, )
 	queryset = Favorite.objects.all()
 	lookup_field = "id"
+	
+	
+class ListFavorites(generics.ListAPIView):
+	serializer_class = FavoriteSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = Favorite.objects.all()
+	
+	def list(self, request):
+		queryset = self.get_queryset()
+		queryset = queryset.filter(user=request.user)
+		serializer = FavoriteSerializer(queryset, many=True)
+		return Response(serializer.data)
+
+

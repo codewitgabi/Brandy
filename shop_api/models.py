@@ -155,4 +155,7 @@ class Favorite(models.Model):
 	
 	def __str__(self):
 		return self.user.username
-
+	
+	@property
+	def image(self):
+		return self.cloth.image.url

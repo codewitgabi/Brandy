@@ -58,7 +58,7 @@ class TransactionNotificationSerializer(
 class FavoriteSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Favorite
-		fields = ("cloth",)
+		fields = ("cloth", "image")
 	
 	def create(self, validated_data):
 		request = self.context.get("request")
