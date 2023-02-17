@@ -62,7 +62,7 @@ class Cloth(models.Model):
 		return self.price - ((self.price * self.discount) / 100)
 		
 	def __str__(self):
-		return self.category
+		return str(self.id)
 
 
 class TransactionNotification(models.Model):

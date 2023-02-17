@@ -53,5 +53,26 @@ class TransactionNotificationSerializer(
 			"message",
 			"pay"
 		)
+
+
+class FavoriteSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Favorite
+		fields = ("cloth",)
+	
+	def create(self, validated_data):
+		request = self.context.get("request")
+		cloth = validated_data.get("cloth")
+		if request:
+			user = request.user
 		
-		
+		if not Favorite.objects.filter(user=user, cloth=cloth).exists():
+			fav = Favorite.objects.create(
+				user=user,
+				cloth=cloth
+			)
+			fav.save()
+		else:
+			fav = Favorite.objects.get(user=user, cloth=cloth)
+			
+		return fav

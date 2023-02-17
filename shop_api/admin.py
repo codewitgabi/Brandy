@@ -7,6 +7,7 @@ class ClothAdmin(admin.ModelAdmin):
 	list_display = ("uploader", "category", "sub_category", "size", "material")
 	
 	
+admin.site.register(Favorite)
 admin.site.register(Cart)
 admin.site.register(CartItem)
 admin.site.register(ClothRating)

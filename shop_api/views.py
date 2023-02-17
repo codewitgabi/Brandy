@@ -6,7 +6,8 @@ from django.db.models import Q
 from .serializers import (
 	ClothUploadSerializer,
 	TransactionNotificationSerializer,
-	ClothSerializer)
+	ClothSerializer,
+	FavoriteSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 
@@ -124,3 +125,11 @@ class GetTransactionNotificationView(generics.ListAPIView):
 		queryset = queryset.filter(tailor=request.user.tailor)
 		serializer = TransactionNotificationSerializer(queryset, many=True)
 		return Response(serializer.data)
+		
+		
+class AddToFavorite(generics.CreateAPIView):
+	serializer_class = FavoriteSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = Favorite.objects.all()
+	
+	
