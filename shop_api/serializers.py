@@ -15,13 +15,19 @@ class ClothUploadSerializer(serializers.ModelSerializer):
 			"sub_category",
 			"price",
 			"discount",
-			"new_price",
 			"available_colors",
 			"material",
 			"size",
 			"length",
 			"image",
 		)
+		read_only_fields = ["id"]
+		
+
+class ClothSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Cloth
+		fields = "__all__"
 		read_only_fields = ["id"]
 
 

@@ -1,9 +1,15 @@
+""" Django imports """
 from django.shortcuts import render
+
+""" Custom imports """
 from .serializers import (
 	ClothUploadSerializer,
-	TransactionNotificationSerializer)
+	TransactionNotificationSerializer,
+	ClothSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
+
+""" third-party imports """
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
@@ -20,7 +26,10 @@ class ClothUploadView(generics.CreateAPIView):
 		serializer.save(image=image, uploader=self.request.user.tailor)
 		
 
-class ClothListView(generics.ListAPIView):
+class TailorStoreListView(generics.ListAPIView):
+	"""
+	Displays all cloth uploaded by a particular tailor.
+	"""
 	serializer_class = ClothUploadSerializer
 	permission_classes = (IsAuthenticated, IsTailor)
 	queryset = Cloth.objects.all()
@@ -33,6 +42,9 @@ class ClothListView(generics.ListAPIView):
 
 
 class ClothUpdateView(generics.RetrieveUpdateAPIView):
+	"""
+	Updates a cloth uploaded by a tailor. For better result, use a PUT request.
+	"""
 	serializer_class = ClothUploadSerializer
 	permission_classes = (IsAuthenticated, IsTailor)
 	queryset = Cloth.objects.all()
@@ -56,7 +68,26 @@ class ClothUpdateView(generics.RetrieveUpdateAPIView):
 	def perform_update(self, serializer):
 		image = self.request.data.get("image")
 		serializer.save(image=image, uploader=self.request.user.tailor)
-
+		
+	
+class ClothListView(generics.ListAPIView):
+	"""
+	Returns all cloth in the database based on category query param passed to the url
+	requires:
+		?category=<category> on url
+	"""
+	serializer_class = ClothSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = Cloth.objects.all()
+	
+	def list(self, request):
+		category = request.query_params.get("category", "")
+		queryset = self.get_queryset()
+		queryset = queryset.filter(
+			category__icontains=category).order_by("?")
+		serializer = ClothSerializer(queryset, many=True)
+		return Response(serializer.data)
+		
 
 class GetTransactionNotificationView(generics.ListAPIView):
 	serializer_class = TransactionNotificationSerializer
