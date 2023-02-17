@@ -61,7 +61,7 @@ Returns a list of all available tailors and a full description regarding their r
 ```POST /tailor/api/create/```\
 Creates a new instance of a tailor. Returns a `500` error if it already exists.
 * __tailor-update__\
-``` PUT, PATCH /tailor/api/update/<user_id>/```\
+```PUT PATCH /tailor/api/update/<user_id>/```\
 Updates the given tailor using the `user_id` passed in the url.
 * __rating__\
 ```POST /tailor/api/rating/```\
@@ -73,3 +73,27 @@ Updates an existing rating for a particular tailor where the `rating_id` is read
 ```PUT /tailor/api/rating/update/<tailor_id>/tailor/```\
 Updates an existimg tailor rating where the `tailor_id` is readily available. This would be used in most cases.
 
+
+[shop_api](https://github.com/codewitgabi/tailor_api/tree/main/shop_api)\
+This app holds every endpoint that are cloth related. This is where the main functionality of the API lie.
+
+* __product-upload__\
+```POST /shop/api/product/upload/```\
+Creates a cloth instance and save it to the database.
+* __store-view__\
+```GET /shop/api/product/store/```\
+Gets all product uploaded by a particular tailor. Requires authentication and the user must be a tailor instance to be able to see result else an invalid response is raised.
+* __product-list__\
+```GET /shop/api/product/list/```\
+Gets all the cloth available. To get cloth based on category, pass the category as a query parameter to the url. e.g `/shop/api/product/list/?category=Men` returns all men-related cloth.
+* __product-update__\
+``` PATCH PUT /shop/api/product/update/<uuid:id>/```\
+Updates an uploaded product using its given uuid. The get the best result, use a `PATCH` request.
+* __transactions__\
+```GET /shop/api/transactions/```\
+Returns a list of all transactions made by a tailor. Can only be accessed by a tailor.
+
+## Author
+Gabriel Michael Ojomakpene\
+09020617734\
+codewitgabi222@gmail.com
