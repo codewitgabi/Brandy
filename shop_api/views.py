@@ -82,12 +82,33 @@ class ClothListView(generics.ListAPIView):
 	queryset = Cloth.objects.all()
 	
 	def list(self, request):
-		category = request.query_params.get("q", "")
-		sub_category = request.query_params.get("category", "")
+		# cloth filters
+		query = request.query_params
+		category = query.get("q", "")
+		sub_category = query.get("category", "")
+		color = query.get("color", "")
+		size = query.get("size", "")
+		length = query.get("length", "")
+		price_range = query.get("price", "999999999999")
+		price_range = float(price_range)
+		material = query.get("material", "")
+		
+		# sort queries
+		newly_added = query.get("new", "date_created")
+		#most_rated = 
+		asc_price = query.get("price", "")
+		dsc_price = query.get("-price", "")
+		
+		# get cloths by queries
 		queryset = self.get_queryset()
 		queryset = queryset.filter(
 			Q(category__icontains=category) &
-			Q(sub_category__icontains=sub_category)
+			Q(sub_category__icontains=sub_category) &
+			Q(available_colors__icontains=color) &
+			Q(size__icontains=size) &
+			Q(length__icontains=length) &
+			Q(price__lte=price_range) &
+			Q(material__icontains=material)
 		).order_by("?")
 		serializer = ClothSerializer(queryset, many=True)
 		return Response(serializer.data)
