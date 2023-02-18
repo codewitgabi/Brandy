@@ -1,6 +1,7 @@
 """ Django Imports """
 from django.shortcuts import render
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
 """ Custom Imports """
 from .models import Tailor, Rating, TaskReminder, Task
@@ -83,6 +84,30 @@ class TailorListView(generics.ListAPIView):
 	"""
 	serializer_class = TailorSerializer
 	queryset = Tailor.objects.all()
+	
+	def list(self, request):
+		# Get user queries
+		query = request.query_params
+		q = query.get("q", "")
+		exp = query.get("exp", "0")
+		exp = int(exp)
+		loc = query.get("loc", "")
+		
+		# sort queries
+		default_order = ["?"]
+		ordering = query.getlist("order", default_order)
+		
+		# get tailors by queries
+		queryset = self.get_queryset()
+		queryset = queryset.filter(
+			Q(experience__gte=exp) &
+			Q(skill__icontains=q) & 
+			Q(location__icontains=loc)
+		).order_by(*ordering)
+		
+		serializer = TailorSerializer(queryset, many=True)
+		
+		return Response(serializer.data)
 
 
 class TailorCreateView(generics.CreateAPIView):

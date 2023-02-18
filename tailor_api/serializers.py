@@ -19,7 +19,8 @@ class TailorSerializer(serializers.ModelSerializer):
 			"user",
 			"profile_picture",
 			"skill",
-			"business_address",
+			"experience",
+			"location",
 			"avg_rating",
 			"total_ratings",
 		)
