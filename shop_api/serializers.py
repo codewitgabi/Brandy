@@ -39,6 +39,8 @@ class ClothSerializer(serializers.ModelSerializer):
 			"material",
 			"size",
 			"length",
+			"rating",
+			"likes",
 			"image",
 		)
 		read_only_fields = ["id"]
@@ -105,3 +107,55 @@ class RetrieveCommentSerializer(serializers.ModelSerializer):
 		fields = (
 			"comments",
 		)
+
+
+class ClothRatingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ClothRating
+		fields = (
+			"cloth",
+			"rating"
+		)
+	
+	def create(self, validated_data):
+		# Get request object
+		cloth = validated_data.get("cloth")
+		request = self.context.get("request")
+		
+		if request:
+			user = request.user
+		
+		if not ClothRating.objects.filter(user=user, cloth=cloth).exists():
+			rating = ClothRating.objects.create(
+				user=user,
+				cloth=cloth,
+				rating=validated_data.get("rating"))
+			rating.save()
+		else:
+			rating = ClothRating.objects.get(user=user, cloth=cloth)
+			
+		return rating
+
+
+class ClothLikeSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = ClothLike
+		fields = (
+			"cloth",
+		)
+		
+	def create(self, validated_data):
+		# Get request object
+		cloth = validated_data.get("cloth")
+		request = self.context.get("request")
+		
+		if request:
+			user = request.user
+		
+		if not ClothLike.objects.filter(user=user, cloth=cloth).exists():
+			like = ClothLike.objects.create(user=user, cloth=cloth)
+			like.save()
+		else:
+			like = ClothLike.objects.get(user=user, cloth=cloth)
+
+		return like;

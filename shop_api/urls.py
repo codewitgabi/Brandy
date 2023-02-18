@@ -20,6 +20,12 @@ urlpatterns = [
 		views.ClothCommentCreateView.as_view()),
 	path("product/<uuid:id>/comments/",
 		views.RetrieveCommentView.as_view()),
+	path("product/rating/",
+		views.ClothRatingCreateView.as_view()),
+	path("product/like/",
+		views.ClothLikeView.as_view()),
+	path("product/unlike/<int:id>/",
+		views.ClothUnlikeView.as_view()),
 	path("transactions/",
 		views.GetTransactionNotificationView.as_view()),
 ]

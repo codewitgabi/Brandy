@@ -9,7 +9,9 @@ from .serializers import (
 	ClothSerializer,
 	FavoriteSerializer,
 	CommentSerializer,
-	RetrieveCommentSerializer)
+	RetrieveCommentSerializer,
+	ClothRatingSerializer,
+	ClothLikeSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 
@@ -164,6 +166,25 @@ class RetrieveCommentView(generics.RetrieveAPIView):
 	serializer_class = RetrieveCommentSerializer
 	permission_classes = (IsAuthenticated,)
 	queryset = Cloth.objects.all()
+	lookup_field = "id"
+
+
+class ClothRatingCreateView(generics.CreateAPIView):
+	serializer_class = ClothRatingSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = ClothRating.objects.all()
+
+
+class ClothLikeView(generics.CreateAPIView):
+	serializer_class = ClothLikeSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = ClothLike.objects.all()
+
+
+class ClothUnlikeView(generics.DestroyAPIView):
+	serializer_class = ClothLikeSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = ClothLike.objects.all()
 	lookup_field = "id"
 	
 	

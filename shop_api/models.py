@@ -62,6 +62,22 @@ class Cloth(models.Model):
 		return self.price - ((self.price * self.discount) / 100)
 		
 	@property
+	def rating(self):
+		ratings = self.clothrating_set.all()
+		avg = 0
+		for r in ratings:
+			avg += float(r.rating)
+			
+		try:
+			return avg / ratings.count()
+		except ZeroDivisionError:
+			return avg
+		
+	@property
+	def likes(self):
+		return self.clothlike_set.all().count()
+		
+	@property
 	def comments(self):
 		queryset = self.comment_set.all().values()
 		data = []
@@ -136,7 +152,7 @@ class ClothRating(models.Model):
 		return self.rating
 		
 		
-class Like(models.Model):
+class ClothLike(models.Model):
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	cloth = models.ForeignKey(Cloth, on_delete=models.CASCADE)
 	
