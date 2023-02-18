@@ -82,6 +82,25 @@ class Tailor(models.Model):
 		for i in r:
 			data.append(i.message)
 		return data
+
+
+class Booking(models.Model):
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
+	due_date = models.DateField()
+	accepted = models.BooleanField(default=False)
+	declined = models.BooleanField(default=False)
+	
+	class Meta:
+		ordering = ["accepted"]
+	
+	def __str__(self):
+		return self.tailor.business_name
+		
+	def clean(self, *args, **kwargs):
+		if self.accepted == True and self.declined == True:
+			raise ValidationError("One of the fields has to be false")
+		super(Booking, self).clean(*args, **kwargs)
 		
 
 class Rating(models.Model):

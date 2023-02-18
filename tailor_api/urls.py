@@ -31,4 +31,13 @@ urlpatterns = [
 	path("dashboard/",
 		views.TailorDashboardView.as_view(),
 		name="tailor-dashboard"),
+	path("book/",
+		views.TailorBookingEvent.as_view(),
+		name="tailor_booking"),
+	path("book/accept/<int:id>/",
+		views.accept_booking,
+		name="accept_booking"),
+	path("book/decline/<int:id>/",
+		views.decline_booking,
+		name="decline_booking"),
 ]

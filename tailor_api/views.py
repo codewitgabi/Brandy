@@ -4,13 +4,16 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 
 """ Custom Imports """
-from .models import Tailor, Rating, TaskReminder, Task
+from .models import Tailor, Rating, TaskReminder, Task, Booking
 from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
 	TailorRatingSerializer,
 	CustomerListingSerializer,
-	TailorDashboardSerializer)
+	TailorDashboardSerializer,
+	BookingCreateSerializer,
+	AcceptBookingSerializer,
+	DeclineBookingSerializer)
 from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 from threading import Thread
 from datetime import datetime, date
@@ -24,6 +27,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.views import APIView
 
 User = get_user_model()
+
 
 def create_reminders():
 	while True:
@@ -139,8 +143,8 @@ class TailorUpdateView(generics.UpdateAPIView):
 		serializer.save(user=self.request.user)
 		
 
-@permission_classes([IsAuthenticated])
 @api_view(["PUT"])
+@permission_classes([IsAuthenticated])
 def ratingUpdateWithTailor(request, id):
 	"""
 	For rating update where a tailors id is readily available, use this.
@@ -225,5 +229,52 @@ class TailorDashboardView(APIView):
 			return Response(serializer.data)
 		except:
 			return Response(status=status.HTTP_423_LOCKED)
+		
+
+class TailorBookingEvent(generics.CreateAPIView):
+	"""
+	Books a tailor to discuss plan for a task.
+	"""
+	serializer_class = BookingCreateSerializer
+	queryset = Booking.objects.all()
+	permission_classes = (IsAuthenticated,)
+	
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def accept_booking(request, id):
+	try:
+		booking = Booking.objects.get(id=id)
+	except Booking.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+		
+	if booking.tailor.user != request.user:
+		return Response({"error": "You do not have permission to modify this content"})
+	
+	if request.method == "POST":
+		booking.accepted = True
+		booking.declined = False
+		booking.save()
+		
+		return Response({"status": "success"})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def decline_booking(request, id):
+	try:
+		booking = Booking.objects.get(id=id)
+	except Booking.DoesNotExist:
+		return Response(status=status.HTTP_404_NOT_FOUND)
+		
+	if booking.tailor.user != request.user:
+		return Response({"error": "You do not have permission to modify this content"})
+	
+	if request.method == "POST":
+		booking.accepted = False
+		booking.declined = True
+		booking.save()
+		
+		return Response({"status": "success"})
 		
 		

@@ -89,7 +89,6 @@ class ClothListView(generics.ListAPIView):
 	def list(self, request):
 		# cloth filters
 		query = request.query_params
-		print(query.getlist("order"))
 		category = query.get("q", "")
 		sub_category = query.get("category", "")
 		color = query.get("color", "")

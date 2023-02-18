@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tailor, Rating, Task
+from .models import Tailor, Rating, Task, Booking
 
 
 """
@@ -73,3 +73,47 @@ class TailorDashboardSerializer(serializers.ModelSerializer):
 			"reminders",
 			"task_list",
 		)
+
+
+class BookingCreateSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Booking
+		fields = (
+			"tailor",
+			"user",
+			"due_date",
+		)
+		read_only_fields = ["user"]
+		
+		
+	def create(self, validated_data):
+		tailor = validated_data.get("tailor")
+		due_date = validated_data.get("due_date")
+		request = self.context.get("request")
+		
+		if request:
+			user = request.user
+			
+		booking = Booking.objects.create(
+			user=user,
+			tailor=tailor,
+			due_date=due_date
+		)
+		booking.save()
+		
+		return booking
+
+
+class AcceptBookingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Booking
+		fields = ("accepted", "declined")
+		read_only_fields = ["declined"]
+		
+
+class DeclineBookingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Booking
+		fields = ("accepted", "declined")
+		read_only_fields = ["accepted"]
+		

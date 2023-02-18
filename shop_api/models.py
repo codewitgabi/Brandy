@@ -191,3 +191,4 @@ class Favorite(models.Model):
 	@property
 	def image(self):
 		return self.cloth.image.url
+
