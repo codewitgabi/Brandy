@@ -141,8 +141,19 @@ class Booking(models.Model):
 		if self.accepted == True and self.declined == True:
 			raise ValidationError("One of the fields has to be false")
 		super(Booking, self).clean(*args, **kwargs)
+	
+	@property
+	def user_detail(self):
+		data = []
+		d = {}
+		d["username"] = self.user.username
+		d["image"] = self.user.image.url
+		d["phone"] = self.user.phone
 		
-
+		data.append(d)
+		return data
+		
+		
 class Rating(models.Model):
 	""" Allowed tailor rating """
 	RATING =  [

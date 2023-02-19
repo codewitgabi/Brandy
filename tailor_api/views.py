@@ -11,9 +11,10 @@ from .serializers import (
 	TailorRatingSerializer,
 	CustomerListingSerializer,
 	TailorDashboardSerializer,
-	BookingCreateSerializer,
+	BookingSerializer,
 	AcceptBookingSerializer,
-	DeclineBookingSerializer)
+	DeclineBookingSerializer,
+	TailorBookingSerializer)
 from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 from threading import Thread
 from datetime import datetime, date
@@ -218,26 +219,48 @@ class GetTailorCustomerList(APIView):
 		return Response(data)
 		
 		
-class TailorDashboardView(APIView):
+class TailorDashboardView(generics.RetrieveAPIView):
 	"""
 	Returns data to be used for a tailors dashboard
 	"""
-	def get(self, request):
-		try:
-			user = request.user.tailor
-			serializer = TailorDashboardSerializer(user)
-			return Response(serializer.data)
-		except:
-			return Response(status=status.HTTP_423_LOCKED)
+	serializer_class = TailorDashboardSerializer
+	queryset = Tailor.objects.all()
+	permission_classes = (IsAuthenticated,)
+	lookup_field = "id"
 		
 
 class TailorBookingEvent(generics.CreateAPIView):
 	"""
 	Books a tailor to discuss plan for a task.
 	"""
-	serializer_class = BookingCreateSerializer
+	serializer_class = BookingSerializer
 	queryset = Booking.objects.all()
 	permission_classes = (IsAuthenticated,)
+
+
+class TailorBookingList(generics.ListAPIView):
+	serializer_class = BookingSerializer
+	queryset = Booking.objects.all()
+	permission_classes = (IsAuthenticated,)
+	
+	def list(self, request):
+		# get queryset
+		queryset = self.get_queryset()
+		
+		# get queries
+		query = request.query_params
+		month = query.get("month", date.today().month)
+		month = int(month)
+		day = query.get("day", 1)
+		day = int(day)
+		
+		queryset = queryset.filter(
+			Q(due_date__month=month) &
+			Q(due_date__day__gte=day),
+			tailor=request.user.tailor,)
+		
+		serializer = BookingSerializer(queryset, many=True)
+		return Response(serializer.data)
 	
 
 @api_view(["POST"])

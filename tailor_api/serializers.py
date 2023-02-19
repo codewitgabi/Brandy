@@ -83,13 +83,20 @@ class TailorDashboardSerializer(serializers.ModelSerializer):
 			"avg_rating",
 			"completed_task"
 		)
+		
+
+class TailorBookingSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Tailor
+		fields = ("schedules",)
 
 
-class BookingCreateSerializer(serializers.ModelSerializer):
+class BookingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Booking
 		fields = (
 			"tailor",
+			"user_detail",
 			"user",
 			"due_date",
 			"duration",
