@@ -67,11 +67,21 @@ class TailorDashboardSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Tailor
 		fields = (
+			"username",
 			"wallet_balance",
 			"money_earned",
 			"pending_money",
 			"reminders",
 			"task_list",
+			"schedules",
+			"followers_count",
+			"following_count",
+			"skill",
+			"experience",
+			"location",
+			"total_ratings",
+			"avg_rating",
+			"completed_task"
 		)
 
 
@@ -82,6 +92,7 @@ class BookingCreateSerializer(serializers.ModelSerializer):
 			"tailor",
 			"user",
 			"due_date",
+			"duration",
 		)
 		read_only_fields = ["user"]
 		

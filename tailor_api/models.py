@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 import uuid
+from datetime import date
 
 User = get_user_model()
 
@@ -50,6 +51,9 @@ class Tailor(models.Model):
 		except ZeroDivisionError:
 			return avg
 		
+	@property
+	def username(self):
+		return self.user.username
 		
 	@property
 	def total_ratings(self):
@@ -74,6 +78,10 @@ class Tailor(models.Model):
 		for task in tasks:
 			data.append(task.customer.image.url)
 		return data
+	
+	@property
+	def completed_task(self):
+		return self.task_set.filter(delivered=True).count()
 		
 	@property
 	def reminders(self):
@@ -82,12 +90,44 @@ class Tailor(models.Model):
 		for i in r:
 			data.append(i.message)
 		return data
+	
+	@property
+	def schedules(self):
+		DATE_TO_WEEKDAY = {
+			"0": "Mon",
+			"1": "Tue",
+			"2": "Wed",
+			"3": "Thur",
+			"4": "Fri",
+			"5": "Sat",
+			"6": "Sun"
+		}
+		arr = []
+		for data in self.booking_set.all().values():
+			y, m, d = str(data.get("due_date")).split("-")
+			y, m, d = int(y), int(m), int(d)
+			data["due_date"] = DATE_TO_WEEKDAY[str(date(y, m, d).weekday())] + f" {d}"
+			data["user_id"] = User.objects.get(id=data["user_id"]).username
+			
+			arr.append(data)
+		return arr
 
 
 class Booking(models.Model):
+	DURATION_CHOICES = [
+		("7am - 8am", "7am - 8am"),
+		("10am - 11am", "10am - 11am"),
+		("1pm - 2pm", "1pm - 2pm"),
+		("4pm - 5pm", "4pm - 5pm"),
+		("7pm - 8pm", "7pm - 8pm"),
+		("9pm - 10pm", "9pm - 10pm"),
+	]
+	
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
 	due_date = models.DateField()
+	duration = models.CharField(
+		max_length= 11, choices=DURATION_CHOICES, default="7am - 8am")
 	accepted = models.BooleanField(default=False)
 	declined = models.BooleanField(default=False)
 	
@@ -204,4 +244,3 @@ class Measurement(models.Model):
 		super(Measurement, self).clean()
 		
 
-# availability

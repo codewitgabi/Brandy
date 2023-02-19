@@ -5,7 +5,7 @@ from .models import (
 	Measurement,
 	TaskReminder,
 	Task,
-	Booking)
+	Booking,)
 
 
 @admin.register(Tailor)
@@ -38,6 +38,5 @@ class MeasurementAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-	list_display = ("user", "tailor", "due_date")
-	
+	list_display = ("user", "tailor", "due_date", "duration")
 	
