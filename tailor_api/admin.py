@@ -5,7 +5,8 @@ from .models import (
 	Measurement,
 	TaskReminder,
 	Task,
-	Booking,)
+	Booking,
+	WalletNotification)
 
 
 @admin.register(Tailor)
@@ -40,3 +41,7 @@ class MeasurementAdmin(admin.ModelAdmin):
 class BookingAdmin(admin.ModelAdmin):
 	list_display = ("user", "tailor", "due_date", "duration")
 	
+
+@admin.register(WalletNotification)
+class WalletNotificationAdmin(admin.ModelAdmin):
+	list_display = ("tailor", "wallet", "date_created")

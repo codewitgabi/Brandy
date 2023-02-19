@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tailor, Rating, Task, Booking
+from .models import Tailor, Rating, Task, Booking, WalletNotification
 
 
 """
@@ -134,4 +134,15 @@ class DeclineBookingSerializer(serializers.ModelSerializer):
 		model = Booking
 		fields = ("accepted", "declined")
 		read_only_fields = ["accepted"]
-		
+
+
+class WalletNotificationSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = WalletNotification
+		fields = (
+			"message",
+			"wallet",
+			"payer",
+			"date_created",
+		)
+

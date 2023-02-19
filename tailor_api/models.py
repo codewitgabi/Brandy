@@ -255,3 +255,23 @@ class Measurement(models.Model):
 		super(Measurement, self).clean()
 		
 
+class WalletNotification(models.Model):
+	WALLET_CHOICES = [
+		("Credit", "Credit"),
+		("Withdrawal", "Withdrawal"),
+		("Pending", "Pending")
+	]
+	
+	date_created = models.DateField(auto_now_add=True)
+	paid_by = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
+	message = models.TextField()
+	wallet = models.CharField(max_length=10, choices=WALLET_CHOICES, default="Pending")
+	
+	@property
+	def payer(self):
+		return self.paid_by.username
+	
+	def __str__(self):
+		return self.message
+

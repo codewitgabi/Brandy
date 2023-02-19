@@ -4,7 +4,7 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 
 """ Custom Imports """
-from .models import Tailor, Rating, TaskReminder, Task, Booking
+from .models import Tailor, Rating, TaskReminder, Task, Booking, WalletNotification
 from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
@@ -14,7 +14,8 @@ from .serializers import (
 	BookingSerializer,
 	AcceptBookingSerializer,
 	DeclineBookingSerializer,
-	TailorBookingSerializer)
+	TailorBookingSerializer,
+	WalletNotificationSerializer)
 from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 from threading import Thread
 from datetime import datetime, date
@@ -299,5 +300,35 @@ def decline_booking(request, id):
 		booking.save()
 		
 		return Response({"status": "success"})
-		
-		
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def withdrawal_notification(request):
+	query = request.query_params
+	wallet = query.get("wallet", "")
+	year = query.get("year", date.today().year)
+	year = int(year)
+	month = query.get("month", date.today().month)
+	month = int(month)
+	
+	if request.method == "GET":
+		try:
+			tailor = request.user.tailor
+			notifications = WalletNotification.objects.filter(
+				Q(wallet__icontains=wallet),
+				Q(date_created__year=year),
+				Q(date_created__month=month),
+				tailor=tailor).values()
+			account = {
+				"pending": tailor.pending_money,
+				"withdrawn": tailor.money_earned,
+				"balance": tailor.wallet_balance
+			}
+			return Response({
+				"account": account,
+				"notifications": notifications,
+			})
+		except:
+			return Response({"error": "Not a valid tailor instance"})
+

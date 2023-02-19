@@ -42,4 +42,5 @@ urlpatterns = [
 	path("booking/decline/<int:id>/",
 		views.decline_booking,
 		name="decline_booking"),
+	path("", views.withdrawal_notification),
 ]
