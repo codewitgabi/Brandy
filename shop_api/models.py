@@ -117,7 +117,7 @@ class Cart(models.Model):
 	paid = models.BooleanField(default=False)
 	
 	def __str__(self):
-		return str(self.paid)
+		return str(self.user.username)
 		
 		
 class CartItem(models.Model):
@@ -126,7 +126,7 @@ class CartItem(models.Model):
 	quantity = models.IntegerField(default= 1)
 	
 	def __str__(self):
-		return self.product
+		return str(self.cloth.id)
 		
 
 class ClothRating(models.Model):

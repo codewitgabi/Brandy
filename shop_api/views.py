@@ -1,6 +1,7 @@
 """ Django imports """
 from django.shortcuts import render
 from django.db.models import Q
+from django.http import JsonResponse
 
 """ Custom imports """
 from .serializers import (
@@ -20,6 +21,7 @@ from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import api_view
 
 
 class ClothUploadView(generics.CreateAPIView):
@@ -198,3 +200,25 @@ class CardCreateEvent(generics.CreateAPIView):
 		except:
 			return Response({"error": "Seems you already have a card"})
 
+
+@api_view(["POST"])
+def cartEvent(request, action, cloth_id):
+	if request.method == "POST":
+		cart, _ = Cart.objects.get_or_create(user=request.user, paid=False)
+		
+		cart_item, _ = cart.cartitem_set.get_or_create(cloth_id=cloth_id)
+		
+		if action == "add":
+			cart_item.quantity += 1
+			cart_item.save()
+		
+		if action == "sub":
+			cart_item.quantity -= 1
+			cart_item.save()
+			
+		if cart_item.quantity <= 0:
+			cart_item.delete()
+			
+		return Response({"status": "success"})
+	
+	
