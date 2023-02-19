@@ -159,3 +159,16 @@ class ClothLikeSerializer(serializers.ModelSerializer):
 			like = ClothLike.objects.get(user=user, cloth=cloth)
 
 		return like;
+
+
+class CardSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Card
+		fields = (
+			"owner",
+			"name",
+			"card_number",
+			"expiry_date",
+			"cvv",
+		)
+

@@ -11,7 +11,7 @@ from .serializers import (
 	CommentSerializer,
 	RetrieveCommentSerializer,
 	ClothRatingSerializer,
-	ClothLikeSerializer)
+	ClothLikeSerializer, CardSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 
@@ -185,5 +185,16 @@ class ClothUnlikeView(generics.DestroyAPIView):
 	permission_classes = (IsAuthenticated,)
 	queryset = ClothLike.objects.all()
 	lookup_field = "id"
+
+
+class CardCreateEvent(generics.CreateAPIView):
+	serializer_class = CardSerializer
+	permission_classes = (IsAuthenticated,)
+	queryset = Card.objects.all()
 	
-	
+	def perform_create(self, serializer):
+		try:
+			serializer.save(user=self.request.user)
+		except:
+			return Response({"error": "Seems you already have a card"})
+

@@ -28,4 +28,6 @@ urlpatterns = [
 		views.ClothUnlikeView.as_view()),
 	path("transactions/",
 		views.GetTransactionNotificationView.as_view()),
+	path("card/create/",
+		views.CardCreateEvent.as_view()),
 ]

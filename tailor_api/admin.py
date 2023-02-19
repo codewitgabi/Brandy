@@ -45,3 +45,4 @@ class BookingAdmin(admin.ModelAdmin):
 @admin.register(WalletNotification)
 class WalletNotificationAdmin(admin.ModelAdmin):
 	list_display = ("tailor", "wallet", "date_created")
+

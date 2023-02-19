@@ -192,3 +192,22 @@ class Favorite(models.Model):
 	def image(self):
 		return self.cloth.image.url
 
+
+class Card(models.Model):
+	id = models.UUIDField(
+		primary_key=True,
+		default=uuid.uuid4,
+		editable=False)
+	user = models.OneToOneField(User, on_delete=models.CASCADE)
+	name = models.CharField(max_length=100)
+	card_number = models.CharField(max_length=16)
+	expiry_date = models.CharField(max_length=7)
+	cvv = models.CharField(max_length=3)
+	
+	@property
+	def owner(self):
+		return self.user.username
+	
+	def __str__(self):
+		return self.user.username
+
