@@ -200,7 +200,7 @@ class RatingUpdateView(generics.UpdateAPIView):
 		serializer.save(user=self.request.user)
 
 
-class GetCustomerDetail(APIView):
+class GetTailorCustomerList(APIView):
 	"""
 	Get Tailors customers list
 	"""
