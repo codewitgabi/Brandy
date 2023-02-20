@@ -30,5 +30,6 @@ urlpatterns = [
 		views.GetTransactionNotificationView.as_view()),
 	path("card/create/",
 		views.CardCreateEvent.as_view()),
-	path("cart/<str:action>/<uuid:cloth_id>/", views.cartEvent)
+	path("cart/<str:action>/<uuid:cloth_id>/", views.cartEvent),
+	path("cart/display/", views.getCartItems),
 ]

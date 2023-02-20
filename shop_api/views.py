@@ -202,6 +202,7 @@ class CardCreateEvent(generics.CreateAPIView):
 
 
 @api_view(["POST"])
+@permission_classes([IsAuthenticated])
 def cartEvent(request, action, cloth_id):
 	if request.method == "POST":
 		cart, _ = Cart.objects.get_or_create(user=request.user, paid=False)
@@ -220,5 +221,32 @@ def cartEvent(request, action, cloth_id):
 			cart_item.delete()
 			
 		return Response({"status": "success"})
-	
-	
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getCartItems(request):
+	if request.method == "GET":
+		cart, _ = Cart.objects.get_or_create(user=request.user, paid=False)
+		
+		cart_items = cart.cartitem_set.all().values()
+		data = []
+		
+		for item in cart_items:
+			json = {}
+			cloth = Cloth.objects.get(id=item.get("cloth_id"))
+			c_item = CartItem.objects.get(id=item.get("id"))
+			
+			# adjust data to be returned
+			json["cloth_img"] = cloth.image.url
+			json["quantity"] = item.get("quantity")
+			json["total_price"] = c_item.price
+			
+			# add json data to list
+			data.append(json)
+		
+		return Response({
+			"cart_total": cart.total_cloths,
+			"price_total": cart.price_total,
+			"data": data})
+

@@ -116,6 +116,20 @@ class Cart(models.Model):
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	paid = models.BooleanField(default=False)
 	
+	@property
+	def total_cloths(self):
+		total = 0
+		for item in self.cartitem_set.all():
+			total += item.quantity
+		return total
+		
+	@property
+	def price_total(self):
+		total = 0
+		for item in self.cartitem_set.all():
+			total = item.cloth.new_price * item.quantity + total
+		return total
+	
 	def __str__(self):
 		return str(self.user.username)
 		
@@ -123,7 +137,11 @@ class Cart(models.Model):
 class CartItem(models.Model):
 	cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
 	cloth = models.ForeignKey(Cloth, on_delete=models.CASCADE)
-	quantity = models.IntegerField(default= 1)
+	quantity = models.IntegerField(default= 0)
+	
+	@property
+	def price(self):
+		return self.cloth.new_price * self.quantity
 	
 	def __str__(self):
 		return str(self.cloth.id)
