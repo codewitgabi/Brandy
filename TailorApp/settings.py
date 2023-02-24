@@ -30,6 +30,7 @@ CUSTOM_APPS = [
 	"auth_api.apps.AuthApiConfig",
 	"shop_api.apps.ShopApiConfig",
 	"tailor_api.apps.TailorApiConfig",
+	"chat.apps.ChatConfig",
 ]
 
 THIRD_PARTY_APPS = [

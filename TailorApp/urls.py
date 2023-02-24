@@ -10,6 +10,7 @@ urlpatterns = [
     path("shop/api/", include("shop_api.urls")),
     path("tailor/api/", include("tailor_api.urls")),
     path('api-auth/', include('rest_framework.urls')),
+    path("chat/api/", include("chat.urls")),
 ]
 
 
