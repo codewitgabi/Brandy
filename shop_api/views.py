@@ -1,5 +1,5 @@
 """ Django imports """
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from django.http import JsonResponse
 
@@ -12,16 +12,16 @@ from .serializers import (
 	CommentSerializer,
 	RetrieveCommentSerializer,
 	ClothRatingSerializer,
-	ClothLikeSerializer, CardSerializer)
+	ClothLikeSerializer, CardSerializer, AmountSerializer)
 from .models import *
 from auth_api.permissions import IsTailor
 
 """ third-party imports """
 from rest_framework.views import APIView
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 
 
 class ClothUploadView(generics.CreateAPIView):
@@ -249,4 +249,23 @@ def getCartItems(request):
 			"cart_total": cart.total_cloths,
 			"price_total": cart.price_total,
 			"data": data})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def complete_cart_payment(request):
+	if request.method == "POST":
+		serializer = AmountSerializer(data=request.data)
+		serializer.is_valid(raise_exception=True)
+		
+		cart = get_object_or_404(Cart, user=request.user, paid=False)
+		data = serializer.data
+		
+		# checks that a user paid the correct amount
+		if str(cart.price_total) == data.get("amount_paid", "0.00"):		
+			cart.paid = True
+			cart.save()
+			return Response({"status": "success"}, status=status.HTTP_200_OK)
+		else:
+			return Response({"status": "The amount of the cart uas been tampered with"})
 

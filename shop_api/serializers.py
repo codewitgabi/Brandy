@@ -172,3 +172,8 @@ class CardSerializer(serializers.ModelSerializer):
 			"cvv",
 		)
 
+
+class AmountSerializer(serializers.Serializer):
+	amount_paid = serializers.DecimalField(
+		max_digits=8, decimal_places=2, default=0.00)
+

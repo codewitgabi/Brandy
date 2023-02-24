@@ -32,4 +32,5 @@ urlpatterns = [
 		views.CardCreateEvent.as_view()),
 	path("cart/<str:action>/<uuid:cloth_id>/", views.cartEvent),
 	path("cart/display/", views.getCartItems),
+	path("cart/complete/", views.complete_cart_payment),
 ]
