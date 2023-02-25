@@ -1,7 +1,6 @@
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-from datetime import timedelta
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -38,6 +37,14 @@ THIRD_PARTY_APPS = [
 	"django_rest_passwordreset",
 	"rest_framework_simplejwt",
 	"rest_framework_simplejwt.token_blacklist",
+	
+	# social login
+	"oauth2_provider",
+	"social_django",
+	"drf_social_oauth2",
+	
+	# csrf_protect
+	"corsheaders",
 ]
 
 
@@ -46,12 +53,15 @@ INSTALLED_APPS = DEFAULT_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    # cors
+    "corsheaders.middleware.CorsMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     
+    # social auth
     "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
@@ -68,6 +78,10 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
+                # oauth
+                "social_django.context_processors.backends",
+                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -131,7 +145,11 @@ REST_FRAMEWORK = {
 	"DEFAULT_AUTHENTICATION_CLASSES": (
 		"rest_framework_simplejwt.authentication.JWTAuthentication",
 		"rest_framework.authentication.BasicAuthentication",
-		"rest_framework.authentication.SessionAuthentication"
+		"rest_framework.authentication.SessionAuthentication",
+		
+		# oauth
+		"oauth2_provider.contrib.rest_framework.OAuth2Authentication",
+		"drf_social_oauth2.authentication.SocialAuthentication",
 	),
 }
 
@@ -169,7 +187,7 @@ SIMPLE_JWT = {
     'JWK_URL': None,
     'LEEWAY': 0,
 
-    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_HEADER_TYPES': ('Bearer', "JWT"),
     'AUTH_HEADER_NAME': 'HTTP_AUTHORIZATION',
     'USER_ID_FIELD': 'id',
     'USER_ID_CLAIM': 'user_id',
@@ -185,6 +203,17 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
+
+# OAUTH
+AUTHENTICATION_BACKENDS = (
+   'drf_social_oauth2.backends.DjangoOAuth2',
+   'django.contrib.auth.backends.ModelBackend',
+)
+
+CORS_ALLOWED_ORIGINS = [
+	# change to the flutter host origin
+	"http://localhost:5500",
+]
 
 # when using postgres, uncomment
 # SOCIAL_AUTH_JSONFIELD_ENABLED = True

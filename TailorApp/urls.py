@@ -7,6 +7,8 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("auth/api/", include("auth_api.urls")),
+    # oauth
+    path("oauth/", include('drf_social_oauth2.urls', namespace='drf')),
     path("shop/api/", include("shop_api.urls")),
     path("tailor/api/", include("tailor_api.urls")),
     path('api-auth/', include('rest_framework.urls')),

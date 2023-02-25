@@ -4,3 +4,6 @@ psycopg2
 django-decouple
 django-rest-passwordreset
 djangorestframework-simplejwt
+gunicorn
+drf_social_oauth2
+django-cors-headers
