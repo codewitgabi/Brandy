@@ -105,6 +105,16 @@ Creates a comment related to a product.
 ```GET /shop/api/transactions/```\
 Returns a list of all transactions made by a tailor. Can only be accessed by a tailor.
 
+[chat](https://github.com/codewitgabi/tailor_api/tree/main/chat)\
+This app contains endpoints for chat messages.
+
+* __create-message__\
+```POST /chat/api/create/```\
+Creates a chat message between two users by passing the id of the user to receive the message. The sender is automatically the logged in user.
+* __get-messages__\
+```GET /chat/api/get-messages/<uuid:id>/```\
+Gets all messages of the logged in user and the user with the given id.
+
 ## Author
 Gabriel Michael Ojomakpene\
 09020617734\

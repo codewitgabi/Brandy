@@ -14,7 +14,10 @@ User = get_user_model()
 class CreateMessage(generics.CreateAPIView):
 	serializer_class = MessageSerializer
 	permission_classes = [IsAuthenticated]
-
+	
+	def perform_create(self, serializer):
+		serializer.save(sender=self.request.user)
+		
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
@@ -37,8 +40,9 @@ def get_messages(request, id):
 	chat_messages = []
 	
 	for message in db_messages:
-		message["sender_id"] = User.objects.get(id= message["sender_id"]).username
-		#message["date_created"] = str(message["date_created"])[:5]
+		message["sender"] = User.objects.get(id= message["sender_id"]).username
+		message["receiver"] = User.objects.get(id= message["receiver_id"]).username
+		
 		chat_messages.append(message)
 		
 	return Response({"messages": chat_messages})
