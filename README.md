@@ -101,6 +101,30 @@ Returns a list of all the products in a users favorite list
 * __product-create-comment__\
 ```POST /shop/api/product/comment/create/```\
 Creates a comment related to a product.
+* __get-product-comment__\
+```GET /shop/api/product/<uuid:id>/comments/```\
+Gets all product related comment. The product's id is to be passed in the url.
+* __rate-product__\
+```POST /shop/api/product/rating/```\
+Creates a rating for a product.
+* __like-product__\
+```POST /shop/api/product/like/```\
+Like event for a product.
+* __unlike-product__\
+```DELETE /shop/api/product/unlike/<int:id>/```\
+Deletes like object from previously liked product.
+* __save-debitcard__\
+```POST /shop/api/card/create/```\
+Saves a user's debit card details to the database.
+* __add/remove-from-cart__\
+```POST cart/<str:action>/<uuid:cloth_id>/```\
+Adds product with the given `id` to the currently logged in user's cart. The specified action determines the action to be done. use `add` to add to the cart and `sub` to remove from cart.
+* __cart-display__\
+```GET /shop/api/cart/display/```\
+Display the cart details of the currently logged in user.
+* __cart-complete__\
+```POST /shop/api/cart/complete/```\
+Clears a user cart after successful payment.
 * __transactions__\
 ```GET /shop/api/transactions/```\
 Returns a list of all transactions made by a tailor. Can only be accessed by a tailor.
