@@ -72,6 +72,27 @@ Updates an existing rating for a particular tailor where the `rating_id` is read
 * __rating-update-via-Tailor__\
 ```PUT /tailor/api/rating/update/<tailor_id>/tailor/```\
 Updates an existimg tailor rating where the `tailor_id` is readily available. This would be used in most cases.
+* __wallet-notification__\
+```GET /tailor/api/wallet/notification/```\
+Gets the wallet notification for a tailor. By default, it renders all notifications. To get notification for a particular wallet, pass a query parameter `?wallet` to the url. `?wallet=credit` returns the tailor's credit notification, `?wallet=withdrawal` returns the tailor's withdrawal notification, `?wallet=pending` returns the tailor's pending balnace notifications.
+* __Book-Tailor__\
+```POST /tailor/api/book/```\
+Books a user with the given id.
+* __TailorBookingsList__\
+```GET /tailor/api/mybooking/```\
+Gets all bookings made to the logged in tailor.
+* __dashboard__\
+```GET /tailor/api/dashboard/```\
+Renders data to be displayed on a tailor's dashboard.
+* __get-customers__\
+```GET /tailor/api/get-customers/```\
+Returns all customers that the current logged in tailor has worked for.
+* __CreateRatingImage__\
+```POST /tailor/api/rating/image/create/<uuid:tailor_id>/```\
+Creates images uploaded by a user during tailor rating.
+* __Feedbacks__\
+```GET /tailor/api/feedbacks/```\
+Gets all related ratings and feedbacks of the current tailor.
 
 
 [shop_api](https://github.com/codewitgabi/tailor_api/tree/main/shop_api)\

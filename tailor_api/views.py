@@ -356,7 +356,7 @@ def withdrawal_notification(request):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def customer_feedback_page(request, id):
+def tailor_feedback_page(request, id):
 	tailor = get_object_or_404(Tailor, id=id)
 	
 	rating_grouping = []
