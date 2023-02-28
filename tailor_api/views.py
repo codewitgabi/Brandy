@@ -346,7 +346,7 @@ def customer_feedback_page(request, id):
 	rating_grouping.append({"1": tailor.rating_set.filter(rating=1).count()})
 	
 	# Get all related ratings/feedbacks
-	feedbacks =  list(tailor.rating_set.all().values())
+	feedbacks =  list(tailor.rating_set.all().order_by("-date_created").values())
 	for d in feedbacks:
 		d["user_name"] = User.objects.get(id=d["user_id"]).username
 		d["rating"] = float(d["rating"])
