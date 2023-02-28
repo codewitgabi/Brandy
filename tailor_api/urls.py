@@ -19,6 +19,8 @@ urlpatterns = [
 	path("rating/",
 		views.RatingCreateView.as_view(),
 		name="create_rating"),
+	path("rating/<uuid:id>/",
+		views.customer_feedback_page),
 	path("rating/update/<int:id>/",
 		views.RatingUpdateView.as_view(),
 		name="patch_rating"),
@@ -42,5 +44,5 @@ urlpatterns = [
 	path("booking/decline/<int:id>/",
 		views.decline_booking,
 		name="decline_booking"),
-	path("", views.withdrawal_notification),
+	path("wallet/notification/", views.withdrawal_notification),
 ]

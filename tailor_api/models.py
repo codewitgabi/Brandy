@@ -44,7 +44,7 @@ class Tailor(models.Model):
 		ratings = self.rating_set.all()
 		avg = 0
 		for rating in ratings:
-			avg += float(rating.rating)
+			avg += int(rating.rating)
 			
 		try:
 			return avg / ratings.count()
@@ -157,24 +157,22 @@ class Booking(models.Model):
 class Rating(models.Model):
 	""" Allowed tailor rating """
 	RATING =  [
-		("0.5", "0.5"),
-		("1.0", "1.0"),
-		("1.5", "1.5"),
-		("2.0", "2.0"),
-		("2.5", "2.5"),
-		("3.0", "3.0"),
-		("3.5", "3.5"),
-		("4.0", "4.0"),
-		("4.5", "4.5"),
-		("5.0", "5.0")
+		("1", "1"),
+		("2", "2"),
+		("3", "3"),
+		("4", "4"),
+		("5", "5")
 	]
 	
 	user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 	rating = models.CharField(
-		max_length=3,
+		max_length=1,
 		choices=RATING,
-		default="5.0")
+		default="2")
+	feedback = models.TextField()
+	image = models.ImageField(upload_to="tailor_rating")
 	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
+	date_created = models.DateField(auto_now_add=True)
 	
 	def __str__(self):
 		return self.rating

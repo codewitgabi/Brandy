@@ -1,5 +1,5 @@
 """ Django Imports """
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Q
 
@@ -331,4 +331,28 @@ def withdrawal_notification(request):
 			})
 		except:
 			return Response({"error": "Not a valid tailor instance"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def customer_feedback_page(request, id):
+	tailor = get_object_or_404(Tailor, id=id)
+	
+	rating_grouping = []
+	rating_grouping.append({"5": tailor.rating_set.filter(rating=5).count()})
+	rating_grouping.append({"4": tailor.rating_set.filter(rating=4).count()})
+	rating_grouping.append({"3": tailor.rating_set.filter(rating=3).count()})
+	rating_grouping.append({"2": tailor.rating_set.filter(rating=2).count()})
+	rating_grouping.append({"1": tailor.rating_set.filter(rating=1).count()})
+	
+	# Get all related ratings/feedbacks
+	feedbacks =  list(tailor.rating_set.all().values())
+	for d in feedbacks:
+		d["user_name"] = User.objects.get(id=d["user_id"]).username
+		d["rating"] = float(d["rating"])
+	
+	return Response({
+		"avg_rating": tailor.avg_rating,
+		"rating_grouping": rating_grouping,
+		"feedbacks": feedbacks})
 

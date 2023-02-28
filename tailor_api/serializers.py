@@ -31,7 +31,7 @@ class TailorRatingSerializer(serializers.Serializer):
 	
 	def validate_rating(self, value):
 		""" rating choices based on rating model instance """
-		choices = ("0.5", "1.0", "1.5", "2.0", "2.5", "3.0", "3.5", "4.0", "4.5", "5.0")
+		choices = ("1", "2", "3", "4", "5")
 		
 		if value not in choices:
 			raise serializers.ValidationError("Not a valid choice")
@@ -46,10 +46,12 @@ class RatingSerializer(serializers.ModelSerializer):
 			"id",
 			"user",
 			"rating",
-			"tailor"
+			"tailor",
+			"feedback",
+			"image",
 		)
 		read_only_fields = ("user", "id")
-
+		
 
 class CustomerListingSerializer(serializers.ModelSerializer):
 	class Meta:
