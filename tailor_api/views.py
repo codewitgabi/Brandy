@@ -4,7 +4,14 @@ from django.contrib.auth import get_user_model
 from django.db.models import Q
 
 """ Custom Imports """
-from .models import Tailor, Rating, TaskReminder, Task, Booking, WalletNotification
+from .models import (
+	Tailor,
+	Rating,
+	TaskReminder,
+	Task,
+	Booking,
+	WalletNotification,
+	RatingImage)
 from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
@@ -169,7 +176,21 @@ def ratingUpdateWithTailor(request, id):
 			}, status=status.HTTP_206_PARTIAL_CONTENT)
 		else:
 			return Response(serializer.errors)
-			
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_rating_image(request, id):
+	images = request.data
+	try:
+		rating = Rating.objects.get(user=request.user, tailor_id=id)
+		print(images)
+		for img in images:
+			RatingImage.objects.create(rating=rating, image=images[img])
+		return Response({"status": "success"})
+	except:
+		return Response({"status": "failed"})
+
 	
 class RatingCreateView(generics.CreateAPIView):
 	"""

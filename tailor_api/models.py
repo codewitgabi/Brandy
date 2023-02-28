@@ -152,8 +152,8 @@ class Booking(models.Model):
 		
 		data.append(d)
 		return data
-		
-		
+
+
 class Rating(models.Model):
 	""" Allowed tailor rating """
 	RATING =  [
@@ -170,12 +170,19 @@ class Rating(models.Model):
 		choices=RATING,
 		default="2")
 	feedback = models.TextField()
-	image = models.ImageField(upload_to="tailor_rating")
 	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
 	date_created = models.DateField(auto_now_add=True)
 	
 	def __str__(self):
 		return self.rating
+
+
+class RatingImage(models.Model):
+	image = models.ImageField(upload_to="tailor_rating")
+	rating = models.ForeignKey(Rating, on_delete=models.CASCADE)
+	
+	def __str__(self):
+		return self.image.url
 
 
 class Task(models.Model):

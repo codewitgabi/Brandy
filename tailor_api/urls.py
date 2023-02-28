@@ -45,4 +45,5 @@ urlpatterns = [
 		views.decline_booking,
 		name="decline_booking"),
 	path("wallet/notification/", views.withdrawal_notification),
+	path("<uuid:id>/", views.create_rating_image),
 ]
