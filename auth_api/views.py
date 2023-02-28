@@ -121,7 +121,7 @@ class ResendOtpView(generics.UpdateAPIView):
 			otp.save()
 			
 			""" send otp """
-			subject = "Resent Otp Verification"
+			subject = "Brandy Resend Otp Verification"
 			html_content = render_to_string("otp.html", {"token": token})
 			mail = EmailMessage(
 				subject,

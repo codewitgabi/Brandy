@@ -69,7 +69,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 		otp.save()
 		
 		""" send mail """
-		subject = "Otp Verification"
+		subject = "Brandy Otp Verification"
 		html_content = render_to_string("otp.html", {"token": token})
 		mail = EmailMessage(
 			subject,

@@ -26,7 +26,7 @@ Endpoint for user registration
 ```GET /auth/api/register/verify-otp/<otp>/```\
 Verifies OTP sent on user registration
 * __resend-otp__\
-```PUT /auth/api/register/resend-otp/```\
+```PUT/PATCH /auth/api/register/resend-otp/```\
 Re-sends an otp to the user on expired otp
 * __login__\
 ```POST /auth/api/login/```\
