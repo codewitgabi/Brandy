@@ -371,6 +371,7 @@ def customer_feedback_page(request, id):
 	for d in feedbacks:
 		d["user_name"] = User.objects.get(id=d["user_id"]).username
 		d["rating"] = float(d["rating"])
+		d["images"] = Rating.objects.get(user_id=d["user_id"], tailor_id=d["tailor_id"]).images
 	
 	return Response({
 		"avg_rating": tailor.avg_rating,

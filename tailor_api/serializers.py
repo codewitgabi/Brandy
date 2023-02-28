@@ -48,15 +48,9 @@ class RatingSerializer(serializers.ModelSerializer):
 			"rating",
 			"tailor",
 			"feedback",
+			"images"
 		)
 		read_only_fields = ("user", "id")
-
-
-class RatingImageSerializer(serializers.ModelSerializer):
-	image = serializers.ListField(child=serializers.ImageField())
-	class Meta:
-		model = RatingImage
-		fields = ("image", "rating")
 		
 
 class CustomerListingSerializer(serializers.ModelSerializer):
