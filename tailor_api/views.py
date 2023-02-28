@@ -180,10 +180,10 @@ def ratingUpdateWithTailor(request, id):
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
-def create_rating_image(request, id):
+def create_rating_image(request, tailor_id):
 	images = request.data
 	try:
-		rating = Rating.objects.get(user=request.user, tailor_id=id)
+		rating = Rating.objects.get(user=request.user, tailor_id=tailor_id)
 		print(images)
 		for img in images:
 			RatingImage.objects.create(rating=rating, image=images[img])

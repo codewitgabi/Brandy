@@ -37,18 +37,13 @@ THIRD_PARTY_APPS = [
 	"django_rest_passwordreset",
 	"rest_framework_simplejwt",
 	"rest_framework_simplejwt.token_blacklist",
-	
-	# social login
-	"oauth2_provider",
-	"social_django",
-	"drf_social_oauth2",
-	
 	# csrf_protect
 	"corsheaders",
 ]
 
 
 INSTALLED_APPS = DEFAULT_APPS + CUSTOM_APPS + THIRD_PARTY_APPS
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -60,9 +55,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
-    # social auth
-    "social_django.middleware.SocialAuthExceptionMiddleware",
 ]
 
 ROOT_URLCONF = 'TailorApp.urls'
@@ -78,10 +70,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                
-                # oauth
-                "social_django.context_processors.backends",
-                "social_django.context_processors.login_redirect",
             ],
         },
     },
@@ -146,10 +134,6 @@ REST_FRAMEWORK = {
 		"rest_framework_simplejwt.authentication.JWTAuthentication",
 		"rest_framework.authentication.BasicAuthentication",
 		"rest_framework.authentication.SessionAuthentication",
-		
-		# oauth
-		"oauth2_provider.contrib.rest_framework.OAuth2Authentication",
-		"drf_social_oauth2.authentication.SocialAuthentication",
 	),
 }
 
@@ -159,7 +143,7 @@ EMAIL_PORT = config("EMAIL_PORT")
 EMAIL_HOST_USER = config("EMAIL_USER")
 EMAIL_HOST_PASSWORD = config("EMAIL_PASSWORD")
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = "TailorApp<no_reply@domain.com>"
+DEFAULT_FROM_EMAIL = "Brandy<no_reply@domain.com>"
 
 
 DJANGO_REST_PASSWORDRESET_TOKEN_CONFIG = {
@@ -203,38 +187,6 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
 }
-
-# OAUTH
-AUTHENTICATION_BACKENDS = (
-    # Facebook OAuth2
-    'social_core.backends.facebook.FacebookAppOAuth2',
-    'social_core.backends.facebook.FacebookOAuth2',
-    # Google OAuth2
-    "social_core.backends.google.GoogleOAuth2",
-    # drf_social_oauth2
-    'drf_social_oauth2.backends.DjangoOAuth2',
-    # Django
-    'django.contrib.auth.backends.ModelBackend',
-)
-
-# Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = config("FACEBOOK_KEY")
-SOCIAL_AUTH_FACEBOOK_SECRET = config("FACEBOOK_SECRET")
-
-
-SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
-SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
-    'fields': 'id, name, email, picture'
-}
-
-# Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config("GOOGLE_CLIENT_ID")
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config("GOOGLE_CLIENT_SECRET")
-
-SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
-    'https://www.googleapis.com/auth/userinfo.email',
-    'https://www.googleapis.com/auth/userinfo.profile',
-]
 
 CORS_ALLOWED_ORIGINS = [
 	# change to the flutter host origin
