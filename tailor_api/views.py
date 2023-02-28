@@ -2,6 +2,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import get_user_model
 from django.db.models import Q
+from django.db.utils import OperationalError
 
 """ Custom Imports """
 from .models import (
@@ -41,52 +42,56 @@ User = get_user_model()
 def create_reminders():
 	while True:
 		time.sleep(1)
-		tasks = Task.objects.filter(delivered=False)
-		for task in tasks:
-			year, month, day = task.due_date.year, task.due_date.month, task.due_date.day
-			cur = datetime.now()
-			to_datetime = datetime(year, month, day)
-			
-			dt = to_datetime - cur
-			mins, _ = divmod(dt.total_seconds(), 60)
-			mins = int(mins)
+		try:
+			tasks = Task.objects.filter(delivered=False)
+			for task in tasks:
+				year, month, day = task.due_date.year, task.due_date.month, task.due_date.day
+				cur = datetime.now()
+				to_datetime = datetime(year, month, day)
+				
+				dt = to_datetime - cur
+				mins, _ = divmod(dt.total_seconds(), 60)
+				mins = int(mins)
+	
+				# create 1 day reminder
+				if mins == 1_440:
+					try:
+						TaskReminder.objects.get(
+							task=task,
+							message="You have 24 hours to complete this task",)
+					except TaskReminder.DoesNotExist:
+						TaskReminder.objects.create(
+							tailor=task.tailor,
+							task=task,
+							message="You have 24 hours to complete this task")
+				
+				# create 12 hrs reminder
+				if mins == 720:
+					try:
+						TaskReminder.objects.get(
+							task=task,
+							message="You have 12 hours to complete this task")
+					except TaskReminder.DoesNotExist:
+						TaskReminder.objects.create(
+							tailor=task.tailor,
+							task=task,
+							message="You have 12 hours to complete this task")
+				
+				# creates 6 hrs reminder
+				if mins == 360:
+					try:
+						TaskReminder.objects.get(
+							task=task,
+							message="You have 6 hours to complete this task")
+					except TaskReminder.DoesNotExist:
+						TaskReminder.objects.create(
+							tailor=task.tailor,
+							task=task,
+							message="You have 6 hours to complete this task")
+		except OperationalError:
+			pass
 
-			# create 1 day reminder
-			if mins == 1_440:
-				try:
-					TaskReminder.objects.get(
-						task=task,
-						message="You have 24 hours to complete this task",)
-				except TaskReminder.DoesNotExist:
-					TaskReminder.objects.create(
-						tailor=task.tailor,
-						task=task,
-						message="You have 24 hours to complete this task")
-			
-			# create 12 hrs reminder
-			if mins == 720:
-				try:
-					TaskReminder.objects.get(
-						task=task,
-						message="You have 12 hours to complete this task")
-				except TaskReminder.DoesNotExist:
-					TaskReminder.objects.create(
-						tailor=task.tailor,
-						task=task,
-						message="You have 12 hours to complete this task")
-			
-			# creates 6 hrs reminder
-			if mins == 360:
-				try:
-					TaskReminder.objects.get(
-						task=task,
-						message="You have 6 hours to complete this task")
-				except TaskReminder.DoesNotExist:
-					TaskReminder.objects.create(
-						tailor=task.tailor,
-						task=task,
-						message="You have 6 hours to complete this task")
-		
+
 t = Thread(target=create_reminders)
 t.start()
 
