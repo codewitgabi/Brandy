@@ -114,27 +114,34 @@ class ClothRatingSerializer(serializers.ModelSerializer):
 		model = ClothRating
 		fields = (
 			"cloth",
-			"rating"
+			"rating",
+			"feedback"
 		)
 	
 	def create(self, validated_data):
 		# Get request object
 		cloth = validated_data.get("cloth")
+		feedback = validated_data.get("feedback")
+		rating = validated_data.get("rating")
 		request = self.context.get("request")
 		
 		if request:
 			user = request.user
 		
 		if not ClothRating.objects.filter(user=user, cloth=cloth).exists():
-			rating = ClothRating.objects.create(
+			new_rating = ClothRating.objects.create(
 				user=user,
 				cloth=cloth,
-				rating=validated_data.get("rating"))
-			rating.save()
+				feedback=feedback,
+				rating=rating)
+			new_rating.save()
 		else:
-			rating = ClothRating.objects.get(user=user, cloth=cloth)
+			new_rating = ClothRating.objects.get(user=user, cloth=cloth)
+			new_rating.feedback = feedback
+			new_rating.rating = rating
+			new_rating.save()
 			
-		return rating
+		return new_rating
 
 
 class ClothLikeSerializer(serializers.ModelSerializer):

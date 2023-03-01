@@ -148,26 +148,39 @@ class CartItem(models.Model):
 		
 
 class ClothRating(models.Model):
-	""" Allowed tailor rating """
+	""" Allowed cloth rating """
 	RATING =  [
-		("0.5", "0.5"),
-		("1.0", "1.0"),
-		("1.5", "1.5"),
-		("2.0", "2.0"),
-		("2.5", "2.5"),
-		("3.0", "3.0"),
-		("3.5", "3.5"),
-		("4.0", "4.0"),
-		("4.5", "4.5"),
-		("5.0", "5.0")
+		("1", "1"),
+		("2", "2"),
+		("3", "3"),
+		("4", "4"),
+		("5", "5")
 	]
 	
 	user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
 	cloth = models.ForeignKey(Cloth, on_delete=models.CASCADE)
-	rating = models.CharField(max_length= 3, default="0.0", choices= RATING)
+	rating = models.CharField(
+		max_length=1,
+		choices=RATING,
+		default="2")
+	feedback = models.TextField()
+	date_created = models.DateField(auto_now_add=True)
+	
+	@property
+	def images(self):
+		data = self.clothratingimage_set.all().values()
+		return data
 	
 	def __str__(self):
 		return self.rating
+
+
+class ClothRatingImage(models.Model):
+	image = models.ImageField(upload_to="cloth_rating")
+	rating = models.ForeignKey(ClothRating, on_delete=models.CASCADE)
+	
+	def __str__(self):
+		return self.image.url
 		
 		
 class ClothLike(models.Model):

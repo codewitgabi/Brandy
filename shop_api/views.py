@@ -176,6 +176,20 @@ class ClothRatingCreateView(generics.CreateAPIView):
 	queryset = ClothRating.objects.all()
 
 
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def create_cloth_rating_image(request, cloth_id):
+	images = request.data
+	try:
+		rating = ClothRating.objects.get(user=request.user, cloth_id=cloth_id)
+		print(images)
+		for img in images:
+			ClothRatingImage.objects.create(rating=rating, image=images[img])
+		return Response({"status": "success"})
+	except:
+		return Response({"status": "failed"})
+
+
 class ClothLikeView(generics.CreateAPIView):
 	serializer_class = ClothLikeSerializer
 	permission_classes = (IsAuthenticated,)
@@ -268,4 +282,29 @@ def complete_cart_payment(request):
 			return Response({"status": "success"}, status=status.HTTP_200_OK)
 		else:
 			return Response({"status": "The amount of the cart uas been tampered with"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def cloth_feedback_page(request, cloth_id):
+	cloth = get_object_or_404(Cloth, id=cloth_id)
+	
+	rating_grouping = []
+	rating_grouping.append({"5": cloth.clothrating_set.filter(rating=5).count()})
+	rating_grouping.append({"4": cloth.clothrating_set.filter(rating=4).count()})
+	rating_grouping.append({"3": cloth.clothrating_set.filter(rating=3).count()})
+	rating_grouping.append({"2": cloth.clothrating_set.filter(rating=2).count()})
+	rating_grouping.append({"1": cloth.clothrating_set.filter(rating=1).count()})
+	
+	# Get all related ratings/feedbacks
+	feedbacks =  list(cloth.clothrating_set.all().order_by("-date_created").values())
+	for d in feedbacks:
+		d["user_name"] = User.objects.get(id=d["user_id"]).username
+		d["rating"] = float(d["rating"])
+		d["images"] = ClothRating.objects.get(user_id=d["user_id"], cloth_id=d["cloth_id"]).images
+	
+	return Response({
+		"avg_rating": cloth.rating,
+		"rating_grouping": rating_grouping,
+		"feedbacks": feedbacks})
 

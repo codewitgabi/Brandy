@@ -22,6 +22,7 @@ urlpatterns = [
 		views.RetrieveCommentView.as_view()),
 	path("product/rating/",
 		views.ClothRatingCreateView.as_view()),
+	path("product/rating-image/<uuid:cloth_id>/", views.create_cloth_rating_image),
 	path("product/like/",
 		views.ClothLikeView.as_view()),
 	path("product/unlike/<int:id>/",
@@ -33,4 +34,5 @@ urlpatterns = [
 	path("cart/<str:action>/<uuid:cloth_id>/", views.cartEvent),
 	path("cart/display/", views.getCartItems),
 	path("cart/complete/", views.complete_cart_payment),
+	path("product/<uuid:cloth_id>/feedbacks/", views.cloth_feedback_page),
 ]
