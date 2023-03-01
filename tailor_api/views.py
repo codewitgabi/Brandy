@@ -28,6 +28,7 @@ from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 from threading import Thread
 from datetime import datetime, date
 import time
+from shop_api.models import CartItem
 
 """ Third-party Imports """
 from rest_framework import generics, status
@@ -232,18 +233,21 @@ class GetTailorCustomerList(APIView):
 	"""
 	Get Tailors customers list
 	"""
-	permission_classes = (IsAuthenticated, IsAccountOwner)
+	permission_classes = (IsAuthenticated,)
 	def get(self, request):
-		user = request.user.tailor
-		tasks = user.task_set.all()
-		data = []
-		serializer = CustomerListingSerializer(tasks, many=True)
-		
-		for d in serializer.data:
-			if not d in data:
-				data.append(d)
-				
-		return Response(data)
+		try:
+			user = request.user.tailor
+			tasks = user.task_set.all()
+			data = []
+			serializer = CustomerListingSerializer(tasks, many=True)
+			
+			for d in serializer.data:
+				if not d in data:
+					data.append(d)
+					
+			return Response(data)
+		except User.tailor.RelatedObjectDoesNotExist:
+			return Response({"error": "User is not a valid tailor instance"}, status=status.HTTP_403_FORBIDDEN)
 		
 		
 class TailorDashboardView(generics.RetrieveAPIView):

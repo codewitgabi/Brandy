@@ -76,6 +76,10 @@ class Cloth(models.Model):
 	@property
 	def likes(self):
 		return self.clothlike_set.all().count()
+	
+	@property
+	def views(self):
+		return self.clothview_set.all().count()
 		
 	@property
 	def comments(self):
@@ -93,6 +97,14 @@ class Cloth(models.Model):
 	def __str__(self):
 		return str(self.id)
 
+
+class ClothView(models.Model):
+	viewer = models.ForeignKey(User, on_delete=models.CASCADE)
+	cloth = models.ForeignKey(Cloth, on_delete=models.CASCADE)
+	
+	def __str__(self):
+		return self.viewer.username
+		
 
 class TransactionNotification(models.Model):
 	tailor = models.ForeignKey(
@@ -143,8 +155,23 @@ class CartItem(models.Model):
 	def price(self):
 		return self.cloth.new_price * self.quantity
 	
+	def save(self, *args, **kwargs):
+		super().save(*args, **kwargs)
+		if not Order.objects.filter(tailor=self.cloth.uploader, cart_item_id=self.id).exists():
+			Order.objects.create(
+				tailor=self.cloth.uploader, cart_item_id=self.id)
+	
 	def __str__(self):
 		return str(self.cloth.id)
+
+
+class Order(models.Model):
+	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
+	cart_item = models.ForeignKey(CartItem, on_delete=models.CASCADE)
+	delivered = models.BooleanField(default=False)
+	
+	def __str__(self):
+		return self.tailor.user.username
 		
 
 class ClothRating(models.Model):

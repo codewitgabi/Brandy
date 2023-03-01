@@ -20,7 +20,12 @@ class ClothUploadSerializer(serializers.ModelSerializer):
 			"size",
 			"length",
 			"image",
+			"new_price",
+			"views",
 		)
+		extra_kwargs = {
+			"price": {"write_only": True}
+		}
 		read_only_fields = ["id"]
 		
 

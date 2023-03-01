@@ -308,3 +308,33 @@ def cloth_feedback_page(request, cloth_id):
 		"rating_grouping": rating_grouping,
 		"feedbacks": feedbacks})
 
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def get_orders(request):
+	try:
+		tailor = request.user.tailor
+		data = []
+		
+		orders = list(Order.objects.filter(tailor=tailor).values())
+		
+		for order in orders:
+			d = {}
+			cloth = CartItem.objects.get(id=order["cart_item_id"]).cloth
+			cart_owner = CartItem.objects.get(id=order["cart_item_id"]).cart.user
+			
+			d["name"] = cloth.sub_category
+			d["material"] = cloth.material
+			d["color"] = cloth.available_colors
+			d["length"] = cloth.length
+			d["size"] = cloth.size
+			d["address"] = cart_owner.address
+			d["phone"] = cart_owner.phone
+			d["image"] = cloth.image.url
+			
+			data.append(d)
+		print(data)
+		return Response({"status": "success", "orders": data})
+		
+	except User.tailor.RelatedObjectDoesNotExist:
+		return Response({"error": "User is not a valid tailor instance"})
