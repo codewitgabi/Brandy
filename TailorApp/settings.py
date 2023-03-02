@@ -8,9 +8,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get("SECRET_KEY")
 
-DEBUG = os.environ.get("DEBUG", "") != "False"
+DEBUG = True
 
-ALLOWED_HOSTS = ["localhost", "brandy.up.railway.app"]
+ALLOWED_HOSTS = ["brandy.up.railway.app", "localhost"]
 
 # Application definition
 
@@ -215,7 +215,3 @@ DATABASES = {
 	}
 }
 
-# when using postgres, uncomment
-SOCIAL_AUTH_JSONFIELD_ENABLED = True
- 
- 
