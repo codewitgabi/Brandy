@@ -32,7 +32,7 @@ urlpatterns = [
     	path("swagger/", schema_view.with_ui("swagger", cache_timeout=0)),
     	])
     ),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 
 if settings.DEBUG:
@@ -43,6 +43,4 @@ else:
 		re_path(r"^media/(?P<path>.*)$", serve, {
 		"document_root": settings.MEDIA_ROOT}),
 	]
-	# serve static files
-	urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
