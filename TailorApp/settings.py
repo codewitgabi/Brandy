@@ -214,19 +214,3 @@ DATABASES = {
 		"PORT": os.environ.get("PG_PORT"),
 	}
 }
-
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'handlers': {
-        'logfile': {
-            'class': 'logging.FileHandler',
-            'filename': 'server.log',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers': ['logfile'],
-        },
-    },
-}
