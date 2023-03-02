@@ -10,7 +10,7 @@ SECRET_KEY = os.environ.get("SECRET_KEY")
 
 DEBUG = os.environ.get("DEBUG", "") != "False"
 
-ALLOWED_HOSTS = ["localhost"]
+ALLOWED_HOSTS = ["localhost", "brandy.up.railway.app"]
 
 # Application definition
 
@@ -198,7 +198,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
-	"http:localhost"
+	"http:localhost",
+	"https://brandy.up.railway.app"
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
