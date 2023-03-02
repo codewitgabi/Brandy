@@ -1,1 +1,1 @@
-web: python manage.py migrate && gunicorn "TailorApp.wsgi"
+web: python manage.py migrate && gunicorn TailorApp.wsgi
