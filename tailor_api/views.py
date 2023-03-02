@@ -11,8 +11,7 @@ from .models import (
 	TaskReminder,
 	Task,
 	Booking,
-	WalletNotification,
-	RatingImage)
+	WalletNotification)
 from .serializers import (
 	TailorSerializer,
 	RatingSerializer,
@@ -361,29 +360,4 @@ def withdrawal_notification(request):
 			})
 		except:
 			return Response({"error": "Not a valid tailor instance"})
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def tailor_feedback_page(request, id):
-	tailor = get_object_or_404(Tailor, id=id)
-	
-	rating_grouping = []
-	rating_grouping.append({"5": tailor.rating_set.filter(rating=5).count()})
-	rating_grouping.append({"4": tailor.rating_set.filter(rating=4).count()})
-	rating_grouping.append({"3": tailor.rating_set.filter(rating=3).count()})
-	rating_grouping.append({"2": tailor.rating_set.filter(rating=2).count()})
-	rating_grouping.append({"1": tailor.rating_set.filter(rating=1).count()})
-	
-	# Get all related ratings/feedbacks
-	feedbacks =  list(tailor.rating_set.all().order_by("-date_created").values())
-	for d in feedbacks:
-		d["user_name"] = User.objects.get(id=d["user_id"]).username
-		d["rating"] = float(d["rating"])
-		d["images"] = Rating.objects.get(user_id=d["user_id"], tailor_id=d["tailor_id"]).images
-	
-	return Response({
-		"avg_rating": tailor.avg_rating,
-		"rating_grouping": rating_grouping,
-		"feedbacks": feedbacks})
 

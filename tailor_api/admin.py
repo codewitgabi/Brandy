@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import (
 	Tailor,
 	Rating,
-	RatingImage,
 	Measurement,
 	TaskReminder,
 	Task,
@@ -17,15 +16,10 @@ class TailorAdmin(admin.ModelAdmin):
 	list_filter = ("skill", "experience", "bank")
 
 
-class RatingImageInline(admin.TabularInline):
-	model = RatingImage
-	
-
 @admin.register(Rating)
 class RatingAdmin(admin.ModelAdmin):
 	list_display = ("rating", "tailor")
 	list_filter = ("rating",)
-	inlines = (RatingImageInline,)
 	
 
 @admin.register(TaskReminder)
@@ -51,9 +45,4 @@ class BookingAdmin(admin.ModelAdmin):
 @admin.register(WalletNotification)
 class WalletNotificationAdmin(admin.ModelAdmin):
 	list_display = ("tailor", "wallet", "date_created")
-
-
-@admin.register(RatingImage)
-class RatingImageAdmin(admin.ModelAdmin):
-	list_display = ("image", "rating")
 

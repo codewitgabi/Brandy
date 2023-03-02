@@ -19,7 +19,6 @@ urlpatterns = [
 	path("rating/",
 		views.RatingCreateView.as_view(),
 		name="create_rating"),
-	path("feedbacks/<uuid:id>/", views.tailor_feedback_page),
 	path("rating/image/create/<uuid:tailor_id>/", views.create_rating_image),
 	path("rating/update/<int:id>/",
 		views.RatingUpdateView.as_view(),

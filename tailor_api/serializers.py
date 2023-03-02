@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Tailor, Rating, Task, Booking, WalletNotification, RatingImage
+from .models import Tailor, Rating, Task, Booking, WalletNotification
 
 
 """
@@ -48,7 +48,6 @@ class RatingSerializer(serializers.ModelSerializer):
 			"rating",
 			"tailor",
 			"feedback",
-			"images"
 		)
 		read_only_fields = ("user", "id")
 		

@@ -1,11 +1,11 @@
 Django>=3.2
 djangorestframework==3.14.0
 psycopg2
+Pillow
 django-decouple
 django-rest-passwordreset
 djangorestframework-simplejwt
 gunicorn
-drf_social_oauth2
 django-cors-headers==3.13.0
 whitenoise
 drf-yasg==1.21.4

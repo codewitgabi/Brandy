@@ -37,6 +37,7 @@ THIRD_PARTY_APPS = [
 	"django_rest_passwordreset",
 	"rest_framework_simplejwt",
 	"rest_framework_simplejwt.token_blacklist",
+	"drf_yasg",
 	# csrf_protect
 	"corsheaders",
 ]

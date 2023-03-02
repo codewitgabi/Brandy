@@ -173,21 +173,8 @@ class Rating(models.Model):
 	tailor = models.ForeignKey(Tailor, on_delete=models.CASCADE)
 	date_created = models.DateField(auto_now_add=True)
 	
-	@property
-	def images(self):
-		data = self.ratingimage_set.all().values()
-		return data
-	
 	def __str__(self):
 		return self.rating
-
-
-class RatingImage(models.Model):
-	image = models.ImageField(upload_to="tailor_rating")
-	rating = models.ForeignKey(Rating, on_delete=models.CASCADE)
-	
-	def __str__(self):
-		return self.image.url
 
 
 class Task(models.Model):
