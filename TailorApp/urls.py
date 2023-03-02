@@ -9,9 +9,9 @@ from drf_yasg import openapi
 # documentation generator
 schema_view = get_schema_view(
 	openapi.Info(
-		title="Snippets API",
-		default_version='v1',
-		description="Test description",
+		title="Brandy API",
+		default_version="v1.0.0",
+		description="Rest API for the Brandy application.",
 		terms_of_service="https://www.google.com/policies/terms/",
 		contact=openapi.Contact(email="codewitgabi222@gmail.com"),
 		license=openapi.License(name="BSD License"),
