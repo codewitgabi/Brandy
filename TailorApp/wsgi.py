@@ -11,13 +11,13 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 from threading import Thread
-from tailor_api.views import create_reminders
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TailorApp.settings')
 
 application = get_wsgi_application()
 
 # start create reminder thread after runserver command is called.
+from tailor_api.views import create_reminders
 t = Thread(target=create_reminders)
 t.start()
 
