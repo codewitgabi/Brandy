@@ -216,6 +216,6 @@ DATABASES = {
 }
 
 # when using postgres, uncomment
- SOCIAL_AUTH_JSONFIELD_ENABLED = True
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
  
  
