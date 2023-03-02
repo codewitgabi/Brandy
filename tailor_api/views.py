@@ -92,8 +92,8 @@ def create_reminders():
 			pass
 
 
-t = Thread(target=create_reminders)
-t.start()
+#t = Thread(target=create_reminders)
+#t.start()
 
 
 class TailorListView(generics.ListAPIView):
