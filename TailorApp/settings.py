@@ -198,7 +198,7 @@ CORS_ALLOW_ALL_ORIGINS = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
 CSRF_TRUSTED_ORIGINS = [
-	"http:localhost",
+	"http://localhost",
 	"https://brandy.up.railway.app"
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
