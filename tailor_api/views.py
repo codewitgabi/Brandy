@@ -92,10 +92,6 @@ def create_reminders():
 			pass
 
 
-#t = Thread(target=create_reminders)
-#t.start()
-
-
 class TailorListView(generics.ListAPIView):
 	"""
 	List all tailors in the database.
