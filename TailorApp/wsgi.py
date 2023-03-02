@@ -8,10 +8,10 @@ https://docs.djangoproject.com/en/3.2/howto/deployment/wsgi/
 """
 
 import os
-from threading import Thread
-from tailor_api.views import create_reminders
 
 from django.core.wsgi import get_wsgi_application
+from threading import Thread
+from tailor_api.views import create_reminders
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TailorApp.settings')
 
