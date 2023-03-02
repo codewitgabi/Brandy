@@ -128,6 +128,6 @@ class OtpSerializer(serializers.Serializer):
 		
 		
 class FollowSerializer(serializers.Serializer):
-	id = serializers.UUIDField(format="hex_verbose")
+	user_id = serializers.UUIDField(format="hex_verbose")
 	
 	

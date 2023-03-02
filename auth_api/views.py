@@ -107,6 +107,7 @@ def verify_OTP(request, otp):
 class ResendOtpView(generics.UpdateAPIView):
 	"""
 	Resends otp after the first has expired
+	body: {email} -> of the currently registered user.
 	"""
 	serializer_class = OtpSerializer
 	model = User
@@ -143,7 +144,10 @@ class ResendOtpView(generics.UpdateAPIView):
 		
 
 class LogoutView(APIView):
-	""" User Logout Handler """
+	"""
+	User Logout Handler
+	body: {refresh_token} -> The refresh_token of the currently logged in user.
+	"""
 	permission_classes = (permissions.IsAuthenticated,)
 	
 	def post(self, request):
@@ -208,13 +212,14 @@ class ChangePassword(generics.UpdateAPIView):
 class FollowUserView(APIView):
 	"""
 	Follow user handler
+	body: {user_id} -> The id of the user to follow
 	"""
 	serializer_class = (FollowSerializer,)
 	permission_classes = (permissions.IsAuthenticated,)
 	
 	def post(self, request):
 		user = request.user
-		user_id = request.data.get("id")
+		user_id = request.data.get("user_id")
 		
 		try:
 			user_to_follow = User.objects.get(id=user_id)
@@ -233,13 +238,14 @@ class FollowUserView(APIView):
 class UnfollowUserView(APIView):
 	"""
 	Unfollow user handler
+	body: {user_id} -> The id of the user to unfollow.
 	"""
 	serializer_class = (FollowSerializer,)
 	permission_classes = (permissions.IsAuthenticated,)
 	
 	def post(self, request):
 		user = request.user
-		user_id = request.data.get("id")
+		user_id = request.data.get("user_id")
 		
 		try:
 			user_to_unfollow = User.objects.get(id=user_id)
