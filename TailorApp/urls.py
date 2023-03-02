@@ -25,7 +25,6 @@ urlpatterns = [
     path("auth/api/", include("auth_api.urls")),
     path("shop/api/", include("shop_api.urls")),
     path("tailor/api/", include("tailor_api.urls")),
-    path('api-auth/', include('rest_framework.urls')),
     path("chat/api/", include("chat.urls")),
     path("api/doc/", include([
     	path("redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
