@@ -312,11 +312,20 @@ def cloth_feedback_page(request, cloth_id):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def get_orders(request):
+	"""
+	Returns all order for the current logged in tailor.
+	query_params:
+		sent: takes true or false as value.
+		/?sent=true returns all orders that have been sent.
+		/?sent=false returns all unsent order. This query param can be ignored as it is the default
+	"""
 	try:
 		tailor = request.user.tailor
+		sent = request.query_params.get("sent", "false")
+		sent = sent.lower() == "true"
 		data = []
 		
-		orders = list(Order.objects.filter(tailor=tailor).values())
+		orders = list(Order.objects.filter(tailor=tailor, delivered=sent).values())
 		
 		for order in orders:
 			d = {}
