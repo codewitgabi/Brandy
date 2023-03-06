@@ -184,6 +184,7 @@ class Task(models.Model):
 	time_created = models.TimeField(auto_now_add=True)
 	due_date = models.DateField()
 	charge = models.DecimalField(max_digits=12, decimal_places=2)
+	completed = models.BooleanField(default=False)
 	delivered = models.BooleanField(default=False)
 	
 	def __str__(self):

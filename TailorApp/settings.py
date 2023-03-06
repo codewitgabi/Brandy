@@ -203,25 +203,23 @@ CSRF_TRUSTED_ORIGINS = [
 ]
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
-"""
-# Config PostgreSQL Database
-DATABASES = {
-	"default": {
-		"ENGINE": "django.db.backends.postgresql",
-		"NAME": os.environ.get("PG_NAME"),
-		"USER": os.environ.get("PG_USER"),
-		"PASSWORD": os.environ.get("PG_PASSWORD"),
-		"HOST": os.environ.get("PG_HOST"),
-		"PORT": os.environ.get("PG_PORT"),
-	}
-}
-"""
 
-if os.environ.get("env") == "dev":
+if os.environ.get("DB_ENV") == "test_sqlite":
 	DATABASES = {
 		"default": {
 			'ENGINE': 'django.db.backends.sqlite3',
 			'NAME': BASE_DIR / 'db.sqlite3'
+		}
+	}
+elif os.environ.get("DB_ENV") == "test_postgres":
+	DATABASES = {
+		"default": {
+			"ENGINE": "django.db.backends.postgresql",
+			"NAME": config("TEST_DB_NAME"),
+			"USER": config("TEST_DB_USER"),
+			"PASSWORD": config("TEST_DB_PASSWORD"),
+			"HOST": config("TEST_DB_HOST"),
+			"PORT": config("TEST_DB_PORT"),
 		}
 	}
 else:

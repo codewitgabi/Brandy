@@ -377,10 +377,26 @@ def withdrawal_notification(request):
 def task_view(request):
 	"""
 	Get all tasks related to the current logged in user which should be a tailor instance.
+	:Params:
+		completed:
+			To query tasks that have been completed, pass the parameter `completed` and set the value to true.
+		delivered:
+			To query tasks that have been delivered, pass the parameter `delivered` and set the value to true.
+	You don't necessarily need to pass the two parameters. Only pass the one you need.
 	"""
 	try:
 		tailor = request.user.tailor
-		tasks = list(Task.objects.filter(tailor=tailor).values())
+		
+		query = request.query_params # get query parameters
+		completed = query.get("completed", "false")
+		completed = completed.lower() == "true"
+		delivered = query.get("delivered", "false")
+		delivered = delivered.lower() == "true"
+		
+		tasks = list(Task.objects.filter(
+			tailor=tailor,
+			completed=completed,
+			delivered=delivered).values())
 		
 		# add more data to response
 		for task in tasks:
