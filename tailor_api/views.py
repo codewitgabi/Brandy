@@ -354,6 +354,29 @@ def withdrawal_notification(request):
 				"account": account,
 				"notifications": notifications,
 			})
-		except:
+		except User.tailor.RelatedObjectDoesNotExist:
 			return Response({"error": "Not a valid tailor instance"})
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def task_view(request):
+	try:
+		tailor = request.user.tailor
+		tasks = list(Task.objects.filter(tailor=tailor).values())
+		
+		for task in tasks:
+			t = Task.objects.get(id=task["id"])
+			task["deadline"] = t.deadline
+			task["customer_name"] = t.username
+			task["customer_phone"] = t.phone
+			task["customer_address"] = t.address
+			task["customer_measurement"] = t.measurement
+		
+		return Response({
+			"tasks": tasks,
+		})
+		
+	except User.tailor.RelatedObjectDoesNotExist:
+		return Response({"error": "Not a valid tailor instance"})
 

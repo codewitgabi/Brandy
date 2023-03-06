@@ -147,3 +147,16 @@ class WalletNotificationSerializer(serializers.ModelSerializer):
 			"date_created",
 		)
 
+
+class TaskSerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Task
+		fields = (
+			"customer",
+			"time_created",
+			"due_date",
+			"charge",
+			"delivered",
+			"deadline",
+		)
+		read_only_fields = ["time_created"]

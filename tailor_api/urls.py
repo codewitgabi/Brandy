@@ -43,5 +43,6 @@ urlpatterns = [
 	path("booking/decline/<int:id>/",
 		views.decline_booking,
 		name="decline_booking"),
-	path("wallet/notification/", views.withdrawal_notification),
+	path("transaction/notifications/", views.withdrawal_notification),
+	path("tasks/list/", views.task_view),
 ]

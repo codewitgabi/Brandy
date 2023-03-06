@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.core.exceptions import ValidationError
 import uuid
-from datetime import date
+from datetime import date, datetime
+from django.utils.timesince import timeuntil
 
 User = get_user_model()
 
@@ -187,6 +188,13 @@ class Task(models.Model):
 	
 	def __str__(self):
 		return self.customer.username
+	
+	@property
+	def deadline(self):
+		d = self.due_date
+		to_datetime = datetime(d.year, d.month, d.day)
+		delta = timeuntil(to_datetime)
+		return delta
 		
 	@property
 	def phone(self):
@@ -206,19 +214,34 @@ class Task(models.Model):
 		
 	@property
 	def measurement(self):
-		m = self.customer.measurement
-		return {
-			"crotch_length": m.crotch_length,
-			"center_length": m.center_length,
-			"out_seam": m.out_seam,
-			"waist": m.waist,
-			"In_seam": m.In_seam,
-			"hip": m.hip,
-			"ankle": m.ankle,
-			"bust": m.bust,
-			"height": m.height,
-			"hight_bust": m.hight_bust
-		}
+		try:
+			m = self.customer.measurement
+			return {
+				"crotch_length": m.crotch_length,
+				"center_length": m.center_length,
+				"out_seam": m.out_seam,
+				"waist": m.waist,
+				"In_seam": m.In_seam,
+				"hip": m.hip,
+				"ankle": m.ankle,
+				"bust": m.bust,
+				"height": m.height,
+				"hight_bust": m.hight_bust
+			}
+			
+		except User.measurement.RelatedObjectDoesNotExist:
+			return {
+				"crotch_length": "",
+				"center_length": "",
+				"out_seam": "",
+				"waist": "",
+				"In_seam": "",
+				"hip": "",
+				"ankle": "",
+				"bust": "",
+				"height": "",
+				"hight_bust": ""
+			}
 		
 		
 class TaskReminder(models.Model):
