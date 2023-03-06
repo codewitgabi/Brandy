@@ -229,6 +229,7 @@ class GetTailorCustomerList(APIView):
 	Get Tailors customers list
 	"""
 	permission_classes = (IsAuthenticated,)
+	
 	def get(self, request):
 		try:
 			user = request.user.tailor
@@ -241,6 +242,7 @@ class GetTailorCustomerList(APIView):
 					data.append(d)
 					
 			return Response(data)
+			
 		except User.tailor.RelatedObjectDoesNotExist:
 			return Response({"error": "User is not a valid tailor instance"}, status=status.HTTP_403_FORBIDDEN)
 		
@@ -330,7 +332,18 @@ def decline_booking(request, id):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def withdrawal_notification(request):
-	query = request.query_params
+	"""
+	Gets the tailor's transaction details.
+	:params:
+		wallet:
+			The type of wallet to be returned. Allowed values are credit, withdrawal, pending.
+		year:
+			This filters the notification by the given year passed to the query parameters.
+		month:
+			Filters it down to a specific month.
+	If none of these parameters are provided, all the notifications are returned.
+	"""
+	query = request.query_params # get query parameters
 	wallet = query.get("wallet", "")
 	year = query.get("year", date.today().year)
 	year = int(year)
@@ -354,6 +367,7 @@ def withdrawal_notification(request):
 				"account": account,
 				"notifications": notifications,
 			})
+			
 		except User.tailor.RelatedObjectDoesNotExist:
 			return Response({"error": "Not a valid tailor instance"})
 
@@ -361,10 +375,14 @@ def withdrawal_notification(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def task_view(request):
+	"""
+	Get all tasks related to the current logged in user which should be a tailor instance.
+	"""
 	try:
 		tailor = request.user.tailor
 		tasks = list(Task.objects.filter(tailor=tailor).values())
 		
+		# add more data to response
 		for task in tasks:
 			t = Task.objects.get(id=task["id"])
 			task["deadline"] = t.deadline
