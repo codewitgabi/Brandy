@@ -425,5 +425,5 @@ class TaskCreateView(generics.CreateAPIView):
 	permission_classes = (IsAuthenticated,)
 	
 	def perform_create(self, serializer):
-		serializer.save(tailor=self.request.user)
+		serializer.save(tailor=self.request.user.tailor)
 

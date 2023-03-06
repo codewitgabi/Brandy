@@ -80,7 +80,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'TailorApp.wsgi.application'
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -130,7 +129,6 @@ AUTH_USER_MODEL = "account.User"
 REST_FRAMEWORK = {
 	"DEFAULT_AUTHENTICATION_CLASSES": (
 		"rest_framework_simplejwt.authentication.JWTAuthentication",
-		
 	),
 }
 

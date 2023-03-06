@@ -45,5 +45,5 @@ urlpatterns = [
 		name="decline_booking"),
 	path("transaction/notifications/", views.withdrawal_notification),
 	path("tasks/list/", views.task_view),
-	path("tasks/create/", views.TaskCreateView.as_view()),
+	path("task/create/", views.TaskCreateView.as_view()),
 ]
