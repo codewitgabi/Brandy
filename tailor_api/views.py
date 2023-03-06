@@ -22,7 +22,8 @@ from .serializers import (
 	AcceptBookingSerializer,
 	DeclineBookingSerializer,
 	TailorBookingSerializer,
-	WalletNotificationSerializer)
+	WalletNotificationSerializer,
+	TaskSerializer)
 from auth_api.permissions import IsTailorAccountOwner, IsAccountOwner
 from threading import Thread
 from datetime import datetime, date
@@ -335,11 +336,11 @@ def withdrawal_notification(request):
 	"""
 	Gets the tailor's transaction details.
 	:params:
-		wallet:
+		`wallet`:
 			The type of wallet to be returned. Allowed values are credit, withdrawal, pending.
-		year:
+		`year`:
 			This filters the notification by the given year passed to the query parameters.
-		month:
+		`month`:
 			Filters it down to a specific month.
 	If none of these parameters are provided, all the notifications are returned.
 	"""
@@ -413,4 +414,16 @@ def task_view(request):
 		
 	except User.tailor.RelatedObjectDoesNotExist:
 		return Response({"error": "Not a valid tailor instance"})
+
+
+class TaskCreateView(generics.CreateAPIView):
+	"""
+	Task Creation handler.
+	"""
+	serializer_class = TaskSerializer
+	queryset = Task.objects.all()
+	permission_classes = (IsAuthenticated,)
+	
+	def perform_create(self, serializer):
+		serializer.save(tailor=self.request.user)
 

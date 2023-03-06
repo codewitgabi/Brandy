@@ -157,6 +157,8 @@ class TaskSerializer(serializers.ModelSerializer):
 			"due_date",
 			"charge",
 			"delivered",
+			"completed",
 			"deadline",
 		)
-		read_only_fields = ["time_created"]
+		read_only_fields = ["time_created", "delivered", "completed"]
+
