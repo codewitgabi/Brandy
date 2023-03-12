@@ -32,12 +32,27 @@ User = get_user_model()
 
 
 class UserListView(generics.ListAPIView):
+	"""
+	Get all app's registered users. Excluding staffs and admins.
+	`Response`:
+		`id`
+		`username`
+		`first_name`
+		`last_name`
+		`image`
+		`address`
+		`followers`
+		`following`
+	"""
 	serializer_class = UserSerializer
 	queryset = User.objects.filter(
 		is_superuser=False, is_staff=False)
 		
 		
 class UserDetailView(generics.RetrieveAPIView):
+	"""
+	Get more details about a user. Pass the user's `id` in the url.
+	"""
 	serializer_class = UserSerializer
 	permission_classes = (IsAccountOwner,)
 	queryset = User.objects.filter(
@@ -74,7 +89,7 @@ class RegisterView(generics.GenericAPIView):
 @api_view(["GET"])
 def verify_OTP(request, otp):
 	""" 
-	Verifies user account by sending the otp passed in the url
+	Verifies user account by sending the `otp` passed in the url
 	"""
 	if request.method == "GET":
 		try:
@@ -107,7 +122,7 @@ def verify_OTP(request, otp):
 class ResendOtpView(generics.UpdateAPIView):
 	"""
 	Resends otp after the first has expired
-	body: {email} -> of the currently registered user.
+	body: `email` of the currently registered user.
 	"""
 	serializer_class = OtpSerializer
 	model = User
@@ -146,7 +161,7 @@ class ResendOtpView(generics.UpdateAPIView):
 class LogoutView(APIView):
 	"""
 	User Logout Handler
-	body: {refresh_token} -> The refresh_token of the currently logged in user.
+	body: `refresh_token` The refresh_token of the currently logged in user.
 	"""
 	permission_classes = (permissions.IsAuthenticated,)
 	
@@ -212,7 +227,7 @@ class ChangePassword(generics.UpdateAPIView):
 class FollowUserView(APIView):
 	"""
 	Follow user handler
-	body: {user_id} -> The id of the user to follow
+	body: `user_id` The id of the user to follow
 	"""
 	serializer_class = (FollowSerializer,)
 	permission_classes = (permissions.IsAuthenticated,)
@@ -238,7 +253,7 @@ class FollowUserView(APIView):
 class UnfollowUserView(APIView):
 	"""
 	Unfollow user handler
-	body: {user_id} -> The id of the user to unfollow.
+	body: `user_id` The id of the user to unfollow.
 	"""
 	serializer_class = (FollowSerializer,)
 	permission_classes = (permissions.IsAuthenticated,)
